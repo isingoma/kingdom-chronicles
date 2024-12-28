@@ -40,18 +40,35 @@ class ScoreService {
       }
     }));
 
-    // Update user's total score
-    await this.client.send(new UpdateCommand({
+    // First time initialization of total score
+    await this.client.send(new PutCommand({
       TableName: this.TABLE_NAME,
-      Key: {
+      Item: {
         PK: `USER#${userId}`,
-        SK: 'TOTAL'
+        SK: 'TOTAL',
+        totalScore: update.score,
+        username: username
       },
-      UpdateExpression: 'ADD totalScore :score',
-      ExpressionAttributeValues: {
-        ':score': update.score
+      ConditionExpression: 'attribute_not_exists(PK)'
+    })).catch(async (err) => {
+      if (err.name === 'ConditionalCheckFailedException') {
+        // If record exists, update it instead
+        await this.client.send(new UpdateCommand({
+          TableName: this.TABLE_NAME,
+          Key: {
+            PK: `USER#${userId}`,
+            SK: 'TOTAL'
+          },
+          UpdateExpression: 'ADD totalScore :score SET username = :username',
+          ExpressionAttributeValues: {
+            ':score': update.score,
+            ':username': username
+          }
+        }));
+      } else {
+        throw err;
       }
-    }));
+    });
   }
 
   async getLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
