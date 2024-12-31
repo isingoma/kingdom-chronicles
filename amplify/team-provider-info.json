@@ -16,14 +16,8 @@
         "kingdomchr": {}
       },
       "storage": {
-        "s3Kingdomchronicles": {},
-        "kingdomChroniclesScores": {}
-      },
-      "api": {
-        "kingdomchronicles": {}
-      },
-      "hosting": {
-        "S3AndCloudFront": {}
+        "kingdomChroniclesScores": {},
+        "s3Kingdomchronicles": {}
       }
     }
   }
