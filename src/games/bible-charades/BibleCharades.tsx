@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Timer } from './components/Timer';
 import { GameSetup } from './components/GameSetup';
@@ -8,7 +8,14 @@ import { GameOver } from './components/GameOver';
 import { useGameState } from './hooks/useGameState';
 
 export const BibleCharades: React.FC = () => {
-  const { gameState, startGame, makeGuess, nextRound } = useGameState();
+  const { 
+    gameState, 
+    startGame, 
+    makeGuess, 
+    nextRound,
+    decrementTime 
+  } = useGameState();
+
   const { 
     currentStory, 
     teams, 
@@ -19,6 +26,24 @@ export const BibleCharades: React.FC = () => {
     settings,
     questionsAnswered
   } = gameState;
+
+  // Timer effect
+  useEffect(() => {
+    if (!isPlaying || timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      decrementTime();
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isPlaying, timeLeft, decrementTime]);
+
+  // Handle round end
+  useEffect(() => {
+    if (isPlaying && timeLeft === 0) {
+      nextRound();
+    }
+  }, [isPlaying, timeLeft, nextRound]);
 
   if (!isPlaying) {
     return (

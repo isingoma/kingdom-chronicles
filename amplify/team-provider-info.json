@@ -16,8 +16,8 @@
         "kingdomchr": {}
       },
       "storage": {
-        "s3Kingdomchronicles": {},
-        "kingdomChroniclesScores": {}
+        "kingdomChroniclesScores": {},
+        "s3Kingdomchronicles": {}
       },
       "api": {
         "kingdomchronicles": {}

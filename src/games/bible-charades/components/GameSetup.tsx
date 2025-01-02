@@ -3,8 +3,9 @@ import { Settings } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { TimeSelector } from '../../shared/components/TimeSelector';
 import { RoundSelector } from '../../shared/components/RoundSelector';
+import { StoryModeSelector } from './StoryModeSelector';
 import { DEFAULT_SETTINGS } from '../../shared/constants/gameSettings';
-import type { Team, GameSettings } from '../types';
+import type { Team, GameSettings, StoryGenerationMode } from '../types';
 
 interface GameSetupProps {
   onGameStart: (teams: Team[], settings: GameSettings) => void;
@@ -15,6 +16,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
   const [team2Name, setTeam2Name] = useState('Team 2');
   const [rounds, setRounds] = useState(DEFAULT_SETTINGS.rounds);
   const [timePerRound, setTimePerRound] = useState(DEFAULT_SETTINGS.timePerRound);
+  const [storyMode, setStoryMode] = useState<StoryGenerationMode>('static');
 
   const handleStartGame = () => {
     const teams: Team[] = [
@@ -25,6 +27,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
     const settings: GameSettings = {
       totalRounds: rounds,
       timePerRound,
+      storyMode,
       points: {
         correct: 100,
         timeBonus: 10
@@ -67,6 +70,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
           />
         </div>
 
+        <StoryModeSelector value={storyMode} onChange={setStoryMode} />
         <RoundSelector value={rounds} onChange={setRounds} />
         <TimeSelector value={timePerRound} onChange={setTimePerRound} />
       </div>
