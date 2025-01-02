@@ -18,6 +18,12 @@
       "storage": {
         "kingdomChroniclesScores": {},
         "s3Kingdomchronicles": {}
+      },
+      "api": {
+        "kingdomchronicles": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
       }
     }
   }
