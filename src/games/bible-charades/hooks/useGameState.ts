@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { storyService } from '../services/storyService';
 import type { GameState, Team, GameSettings, BibleStory } from '../types';
+import { analyticsService } from '../../../services/analytics/analyticsService';
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -20,6 +21,8 @@ export const useGameState = () => {
   });
 
   const startGame = useCallback(async (teams: Team[], settings: GameSettings) => {
+    // Track game start
+    analyticsService.trackGameStart('bible-charades', settings);
     setGameState(prev => ({
       ...prev,
       teams,
@@ -77,7 +80,28 @@ export const useGameState = () => {
   }, [gameState]);
 
   const nextRound = useCallback(async () => {
+
+    // Track round end
+    const duration = gameState.settings?.timePerRound 
+      ? gameState.settings.timePerRound - gameState.timeLeft 
+      : 0;
+    
+    analyticsService.trackGameEvent('round_end', 'bible-charades', {
+      round: gameState.currentRound,
+      score: gameState.roundScore,
+      duration
+    });
+
+    
     if (gameState.currentRound >= gameState.settings.totalRounds) {
+
+      // Track game end
+      analyticsService.trackGameEnd(
+        'bible-charades', 
+        gameState.roundScore,
+        duration
+      );
+      
       setGameState(prev => ({ ...prev, isPlaying: false }));
       return;
     }

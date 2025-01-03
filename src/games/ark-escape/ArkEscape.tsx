@@ -7,6 +7,7 @@ import { RoundTimer } from '../../components/game/RoundTimer';
 import { ArkGameSetup } from './components/ArkGameSetup';
 import { ResourceList } from './components/ResourceList';
 import type { GameSettings } from './types';
+import { analyticsService } from '../../services/analytics/analyticsService';
 
 export const ArkEscape: React.FC = () => {
   const {
@@ -31,10 +32,14 @@ export const ArkEscape: React.FC = () => {
 
   const handleRoundEnd = useCallback(() => {
     const score = calculateScore(timeLeft);
+    const duration = settings?.timePerRound ? settings.timePerRound - timeLeft : 0;
+    // Track game analytics
+    analyticsService.trackGameEnd('ark-escape', score.points, duration);
+
     handleScoreUpdate(score.points);
     endRound(score);
     resetGame();
-  }, [calculateScore, handleScoreUpdate, endRound, resetGame, timeLeft]);
+  }, [calculateScore, handleScoreUpdate, endRound, resetGame,settings?.timePerRound,timeLeft]);
 
   useEffect(() => {
     if (!isPlaying || timeLeft <= 0) return;
@@ -50,6 +55,8 @@ export const ArkEscape: React.FC = () => {
   }, [isPlaying, timeLeft, handleRoundEnd]);
 
   const handleGameStart = useCallback((gameSettings: GameSettings) => {
+    // Track game start
+    analyticsService.trackGameStart('ark-escape', gameSettings);
     resetGame();
     startGame(gameSettings);
   }, [resetGame, startGame]);

@@ -8,6 +8,7 @@ import { useRoundManager } from './hooks/useRoundManager';
 import { useGameScore } from '../../hooks/useGameScore';
 import { RoundTimer } from '../../components/game/RoundTimer';
 import type { GameSettings } from './types';
+import { analyticsService } from '../../services/analytics/analyticsService';
 
 export const KingdomBuilders: React.FC = () => {
   const {
@@ -35,10 +36,14 @@ export const KingdomBuilders: React.FC = () => {
 
   const handleRoundEnd = useCallback(() => {
     const score = calculateScore();
+    const duration = settings?.timePerRound ? settings.timePerRound - timeLeft : 0;
+    // Track game analytics
+    analyticsService.trackGameEnd('kingdom-builders', score.points, duration);
+    
     handleScoreUpdate(score.points);
     endRound(score);
     resetGame();
-  }, [calculateScore, handleScoreUpdate, endRound, resetGame]);
+  }, [calculateScore, handleScoreUpdate, endRound, resetGame,settings?.timePerRound,timeLeft]);
 
   useEffect(() => {
     if (!isPlaying || timeLeft <= 0) return;
@@ -54,6 +59,7 @@ export const KingdomBuilders: React.FC = () => {
   }, [isPlaying, timeLeft, handleRoundEnd]);
 
   const handleGameStart = useCallback((gameSettings: GameSettings) => {
+    analyticsService.trackGameStart('kingdom-builders', gameSettings);
     resetGame();
     startGame(gameSettings);
   }, [resetGame, startGame]);
