@@ -1,25 +1,73 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { storyService } from '../services/storyService';
 import type { GameState, Team, GameSettings, BibleStory } from '../types';
+import { analyticsService } from '../../../services/analytics/analyticsService';
+
+
+interface GameStateType {
+  currentStory: BibleStory | null;
+  teams: Team[];
+  settings: GameSettings;
+  currentRound: number;
+  timeLeft: number;
+  isPlaying: boolean;
+  roundScore: number;
+  questionsAnswered: number;
+  isLoading: boolean;
+}
 
 export const useGameState = () => {
-  const [gameState, setGameState] = useState<GameState>({
+  const [gameState, setGameState] = useState<GameStateType>({
     currentStory: null,
     teams: [],
     settings: {
       totalRounds: 5,
       timePerRound: 60,
       storyMode: 'static',
+      difficulty: 'medium',
       points: { correct: 100, timeBonus: 10 }
     },
     currentRound: 0,
     timeLeft: 60,
     isPlaying: false,
     roundScore: 0,
-    questionsAnswered: 0
+    questionsAnswered: 0,
+    isLoading: false
   });
 
+  const storiesQueue = useRef<BibleStory[]>([]);
+  const isFetchingStories = useRef(false);
+
+  const fetchStoriesBatch = useCallback(async (mode: string, difficulty: string) => {
+    if (isFetchingStories.current) return;
+    
+    isFetchingStories.current = true;
+    try {
+      const newStories = await storyService.fetchStoriesBatch(mode, 'general', difficulty);
+      storiesQueue.current = [...storiesQueue.current, ...newStories];
+    } catch (error) {
+      console.error('Error fetching stories batch:', error);
+    } finally {
+      isFetchingStories.current = false;
+    }
+  }, []);
+
+  const getNextStory = useCallback(async () => {
+    if (storiesQueue.current.length < 3) {
+      setGameState(prev => ({ ...prev, isLoading: true }));
+      await fetchStoriesBatch(
+        gameState.settings.storyMode,
+        gameState.settings.difficulty
+      );
+    }
+
+    const nextStory = storiesQueue.current.shift();
+    setGameState(prev => ({ ...prev, isLoading: false, currentStory: nextStory || null }));
+    return nextStory;
+  }, [gameState.settings.storyMode, gameState.settings.difficulty, fetchStoriesBatch]);
+
   const startGame = useCallback(async (teams: Team[], settings: GameSettings) => {
+    analyticsService.trackGameStart('bible-charades', settings);
     setGameState(prev => ({
       ...prev,
       teams,
@@ -28,22 +76,16 @@ export const useGameState = () => {
       timeLeft: settings.timePerRound,
       isPlaying: true,
       roundScore: 0,
-      questionsAnswered: 0
+      questionsAnswered: 0,
+      isLoading: true
     }));
 
-    try {
-      const firstStory = await storyService.getNextStory(
-        settings.storyMode,
-        'general',
-        'easy'
-      );
-      if (firstStory) {
-        setGameState(prev => ({ ...prev, currentStory: firstStory }));
-      }
-    } catch (error) {
-      console.error('Error getting first story:', error);
+    if (settings.storyMode !== 'static') {
+      await fetchStoriesBatch(settings.storyMode, settings.difficulty);
     }
-  }, []);
+
+    await getNextStory();
+  }, [fetchStoriesBatch, getNextStory]);
 
   const makeGuess = useCallback(async (guess: string) => {
     if (!gameState.currentStory) return;
@@ -62,19 +104,8 @@ export const useGameState = () => {
       }))
     }));
 
-    try {
-      const nextStory = await storyService.getNextStory(
-        gameState.settings.storyMode,
-        'general',
-        gameState.currentRound <= 2 ? 'easy' : gameState.currentRound <= 4 ? 'medium' : 'hard'
-      );
-      if (nextStory) {
-        setGameState(prev => ({ ...prev, currentStory: nextStory }));
-      }
-    } catch (error) {
-      console.error('Error getting next story:', error);
-    }
-  }, [gameState]);
+    await getNextStory();
+  }, [gameState, getNextStory]);
 
   const nextRound = useCallback(async () => {
     if (gameState.currentRound >= gameState.settings.totalRounds) {
@@ -82,27 +113,18 @@ export const useGameState = () => {
       return;
     }
 
-    try {
-      const nextStory = await storyService.getNextStory(
-        gameState.settings.storyMode,
-        'general',
-        gameState.currentRound <= 2 ? 'easy' : gameState.currentRound <= 4 ? 'medium' : 'hard'
-      );
-      if (nextStory) {
-        setGameState(prev => ({
-          ...prev,
-          currentRound: prev.currentRound + 1,
-          timeLeft: prev.settings.timePerRound,
-          currentStory: nextStory,
-          roundScore: 0,
-          questionsAnswered: 0,
-          teams: prev.teams.map(team => ({ ...team, isActing: !team.isActing }))
-        }));
-      }
-    } catch (error) {
-      console.error('Error getting next story:', error);
-    }
-  }, [gameState]);
+    setGameState(prev => ({
+      ...prev,
+      currentRound: prev.currentRound + 1,
+      timeLeft: prev.settings.timePerRound,
+      roundScore: 0,
+      questionsAnswered: 0,
+      teams: prev.teams.map(team => ({ ...team, isActing: !team.isActing })),
+      isLoading: true
+    }));
+
+    await getNextStory();
+  }, [gameState.currentRound, gameState.settings.totalRounds, getNextStory]);
 
   const decrementTime = useCallback(() => {
     setGameState(prev => ({

@@ -6,36 +6,47 @@ import type { BibleStory, StoryGenerationMode } from '../types';
 class StoryService {
   private usedStoryIds: Set<string> = new Set();
 
-  async getNextStory(mode: StoryGenerationMode, theme: string, difficulty: string): Promise<BibleStory | null> {
+  async fetchStoriesBatch(mode: StoryGenerationMode, theme: string, difficulty: string, batchSize: number = 10): Promise<BibleStory[]> {
     try {
-      let story: BibleStory | null = null;
+      let stories: BibleStory[] = [];
       
       switch (mode) {
         case 'bedrock':
-          const prompt = await promptService.generateStoryPrompt(theme, difficulty);
-          story = this.convertPromptToStory(prompt);
+          // Single API call for multiple stories
+          const prompt = await promptService.generateStoryPrompt(theme, difficulty, batchSize);
+          stories = Array.isArray(prompt) ? prompt.map(p => this.convertPromptToStory(p)) : [];
           break;
+
         case 'chatgpt':
-          story = await chatgptStoryService.generateStory(theme, difficulty);
+          // Single API call for multiple stories
+          stories = await chatgptStoryService.generateStories(theme, difficulty, batchSize);
           break;
+
         case 'static':
         default:
-          story = await this.getStaticStory();
+          const availableStories = BIBLE_STORIES.filter(
+            story => !this.usedStoryIds.has(story.id)
+          );
+          
+          if (availableStories.length === 0) {
+            this.usedStoryIds.clear();
+            stories = BIBLE_STORIES.slice(0, batchSize);
+          } else {
+            stories = availableStories.slice(0, batchSize);
+          }
+
+          stories.forEach(story => this.usedStoryIds.add(story.id));
       }
 
-      if (!story) {
-        throw new Error('Failed to generate story');
-      }
-
-      // Add descriptive fallback if not present
-      if (!story.fallbackDescription) {
-        story.fallbackDescription = this.generateFallbackDescription(story);
-      }
-
-      return story;
+      // Add fallback descriptions if needed
+      return stories.map(story => ({
+        ...story,
+        fallbackDescription: story.fallbackDescription || this.generateFallbackDescription(story)
+      }));
     } catch (error) {
-      console.error('Error getting story:', error);
-      return this.getStaticStory();
+      console.error('Error fetching stories batch:', error);
+      // Fallback to static stories if API calls fail
+      return BIBLE_STORIES.slice(0, batchSize);
     }
   }
 
@@ -47,24 +58,9 @@ class StoryService {
     `.trim();
   }
 
-  private async getStaticStory(): Promise<BibleStory> {
-    const availableStories = BIBLE_STORIES.filter(
-      story => !this.usedStoryIds.has(story.id)
-    );
-
-    if (availableStories.length === 0) {
-      this.usedStoryIds.clear();
-      return BIBLE_STORIES[0];
-    }
-
-    const story = availableStories[Math.floor(Math.random() * availableStories.length)];
-    this.usedStoryIds.add(story.id);
-    return story;
-  }
-
   private convertPromptToStory(prompt: any): BibleStory {
     return {
-      id: `story-${Date.now()}`,
+      id: `story-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: prompt.title,
       description: prompt.description,
       scripture: prompt.scripture,

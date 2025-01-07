@@ -4,8 +4,9 @@ import { Button } from '../../../components/ui/Button';
 import { TimeSelector } from '../../shared/components/TimeSelector';
 import { RoundSelector } from '../../shared/components/RoundSelector';
 import { StoryModeSelector } from './StoryModeSelector';
+import { DifficultySelector } from './DifficultySelector';
 import { DEFAULT_SETTINGS } from '../../shared/constants/gameSettings';
-import type { Team, GameSettings, StoryGenerationMode } from '../types';
+import type { Team, GameSettings, StoryGenerationMode, GameDifficulty } from '../types';
 
 interface GameSetupProps {
   onGameStart: (teams: Team[], settings: GameSettings) => void;
@@ -17,6 +18,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
   const [rounds, setRounds] = useState(DEFAULT_SETTINGS.rounds);
   const [timePerRound, setTimePerRound] = useState(DEFAULT_SETTINGS.timePerRound);
   const [storyMode, setStoryMode] = useState<StoryGenerationMode>('static');
+  const [difficulty, setDifficulty] = useState<GameDifficulty>('medium');
 
   const handleStartGame = () => {
     const teams: Team[] = [
@@ -28,6 +30,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
       totalRounds: rounds,
       timePerRound,
       storyMode,
+      difficulty,
       points: {
         correct: 100,
         timeBonus: 10
@@ -71,6 +74,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
         </div>
 
         <StoryModeSelector value={storyMode} onChange={setStoryMode} />
+        <DifficultySelector value={difficulty} onChange={setDifficulty} />
         <RoundSelector value={rounds} onChange={setRounds} />
         <TimeSelector value={timePerRound} onChange={setTimePerRound} />
       </div>
