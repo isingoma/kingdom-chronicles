@@ -24,19 +24,20 @@ export const BibleCharades: React.FC = () => {
     isPlaying, 
     roundScore,
     settings,
-    questionsAnswered
+    questionsAnswered,
+    isLoading
   } = gameState;
 
   // Timer effect
   useEffect(() => {
-    if (!isPlaying || timeLeft <= 0) return;
+    if (!isPlaying || timeLeft <= 0 || isLoading) return;
 
     const timer = setInterval(() => {
       decrementTime();
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isPlaying, timeLeft, decrementTime]);
+  }, [isPlaying, timeLeft, decrementTime, isLoading]);
 
   // Handle round end
   useEffect(() => {
@@ -75,42 +76,58 @@ export const BibleCharades: React.FC = () => {
       </div>
 
       <AnimatePresence mode="wait">
-        {currentStory && timeLeft > 0 && (
+        {isLoading ? (
           <motion.div
-            key={currentStory.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center p-8 bg-white rounded-lg shadow-md"
           >
-            <StoryDisplay 
-              story={currentStory}
-              onGuess={makeGuess}
-            />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">
+              Generating new questions... Please wait!
+            </p>
           </motion.div>
-        )}
+        ) : (
+          <>
+            {currentStory && timeLeft > 0 && (
+              <motion.div
+                key={currentStory.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <StoryDisplay 
+                  story={currentStory}
+                  onGuess={makeGuess}
+                />
+              </motion.div>
+            )}
 
-        {timeLeft === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="bg-white rounded-lg shadow-md p-6"
-          >
-            <h3 className="text-xl font-bold mb-4">Time's Up!</h3>
-            <div className="mb-6">
-              <p className="text-lg mb-2">Round Summary:</p>
-              <div className="bg-indigo-50 p-4 rounded-lg">
-                <p className="font-semibold">Questions Answered: {questionsAnswered}</p>
-                <p className="font-semibold">Total Score: {roundScore}</p>
-              </div>
-            </div>
-            <button
-              onClick={nextRound}
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
-            >
-              {currentRound < settings.totalRounds ? 'Next Round' : 'End Game'}
-            </button>
-          </motion.div>
+            {timeLeft === 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="bg-white rounded-lg shadow-md p-6"
+              >
+                <h3 className="text-xl font-bold mb-4">Time's Up!</h3>
+                <div className="mb-6">
+                  <p className="text-lg mb-2">Round Summary:</p>
+                  <div className="bg-indigo-50 p-4 rounded-lg">
+                    <p className="font-semibold">Questions Answered: {questionsAnswered}</p>
+                    <p className="font-semibold">Total Score: {roundScore}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={nextRound}
+                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
+                >
+                  {currentRound < settings.totalRounds ? 'Next Round' : 'End Game'}
+                </button>
+              </motion.div>
+            )}
+          </>
         )}
       </AnimatePresence>
     </div>

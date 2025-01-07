@@ -4,6 +4,14 @@ import { Building2, Ship, Theater } from 'lucide-react';
 
 const games = [
   {
+    id: 'bible-charades',
+    title: 'Bible Charades',
+    description: 'Act out and guess Biblical stories in this exciting team game',
+    icon: <Theater className="w-12 h-12 text-indigo-600" />,
+    difficulty: 'Easy',
+    players: '4-12'
+  },
+  {
     id: 'kingdom-builders',
     title: 'Kingdom Builders',
     description: 'Build and manage your Biblical kingdom with wisdom and strategy',
@@ -18,14 +26,6 @@ const games = [
     icon: <Ship className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Easy',
     players: '1-2'
-  },
-  {
-    id: 'bible-charades',
-    title: 'Bible Charades',
-    description: 'Act out and guess Biblical stories in this exciting team game',
-    icon: <Theater className="w-12 h-12 text-indigo-600" />,
-    difficulty: 'Easy',
-    players: '4-12'
   }
 ];
 

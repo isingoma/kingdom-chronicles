@@ -21,17 +21,23 @@ export class OpenAIClient {
     }
   }
 
-  async generateStoryPrompt(theme: string, difficulty: string): Promise<string> {
+  async generateStoryPrompt(theme: string, difficulty: string, count: number = 10): Promise<string> {
     try {
-      const prompt = `Generate a Bible-themed story question with the following requirements:
+      const prompt = `Generate ${count} Bible-themed story questions with the following requirements:
         - Theme: ${theme}
         - Difficulty: ${difficulty}
-        - Include a title, description, scripture reference, and 4 multiple choice options
-        - Make it engaging and educational
-        - Format as JSON with fields: title, description, scripture, options (array), devotional
-        - First option should be the correct answer
-        - Keep it appropriate for all ages`;
-      console.log(`${this.baseUrl}/chat/completions`)
+        - For each story include:
+          * title
+          * description
+          * scripture reference
+          * 4 multiple choice options (first option must be correct)
+          * brief devotional message
+        - Make them engaging and educational
+        - Keep it appropriate for all ages
+        - Return as a JSON array with each story having fields: title, description, scripture, options (array), devotional
+        
+        Format the response as a valid JSON array of story objects.`;
+
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
@@ -50,11 +56,10 @@ export class OpenAIClient {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error?.message || 'Failed to generate story from ChatGPT');
+        throw new Error(error.error?.message || 'Failed to generate stories from ChatGPT');
       }
 
       const data = await response.json() as ChatGPTResponse;
-      console.log(`my response data `,data.choices[0].message.content)
       return data.choices[0].message.content;
     } catch (error) {
       console.error('OpenAI API Error:', error);
