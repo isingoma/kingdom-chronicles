@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Ship, Theater } from 'lucide-react';
+import { Building2, Ship, Theater, Book, BookOpen } from 'lucide-react';
 
 const games = [
   {
@@ -26,6 +26,22 @@ const games = [
     icon: <Ship className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Easy',
     players: '1-2'
+  },
+  {
+    id: 'bible-verse',
+    title: 'Find the Bible Verse',
+    description: 'Test your Bible navigation skills in this fast-paced challenge',
+    icon: <Book className="w-12 h-12 text-indigo-600" />,
+    difficulty: 'Medium',
+    players: '1'
+  },
+  {
+    id: 'testament-quiz',
+    title: 'Guess the Testament',
+    description: 'Quick-fire rounds of Old vs New Testament identification',
+    icon: <BookOpen className="w-12 h-12 text-indigo-600" />,
+    difficulty: 'Easy',
+    players: '1'
   }
 ];
 

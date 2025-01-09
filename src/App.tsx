@@ -7,6 +7,8 @@ import { Leaderboard } from './pages/Leaderboard';
 import { KingdomBuilders } from './games/kingdom-builders/KingdomBuilders';
 import { ArkEscape } from './games/ark-escape/ArkEscape';
 import { BibleCharades } from './games/bible-charades/BibleCharades';
+import { BibleVerse } from './games/bible-verse/BibleVerse';
+import { TestamentQuiz } from './games/testament-quiz/TestamentQuiz';
 import { authService } from './services/auth';
 import { useAuthStore } from './store/useAuthStore';
 import { initializeAnalytics } from './services/analytics/config';
@@ -57,6 +59,8 @@ export default function App() {
           <Route path="/games/kingdom-builders" element={<KingdomBuilders />} />
           <Route path="/games/ark-escape" element={<ArkEscape />} />
           <Route path="/games/bible-charades" element={<BibleCharades />} />
+          <Route path="/games/bible-verse" element={<BibleVerse />} />
+          <Route path="/games/testament-quiz" element={<TestamentQuiz />} />
         </Routes>
       </div>
     </Router>
