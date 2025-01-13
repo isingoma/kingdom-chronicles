@@ -19,19 +19,23 @@ export const useAuthStore = create<AuthState>()(
       guestScore: 0,
       login: (user) => set({ user, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
-      updateScore: (points) => set((state) => {
-        if (state.isAuthenticated && state.user) {
+      updateScore: (points) => {
+        if (points === 0) return;
+        
+        set((state) => {
+          if (state.isAuthenticated && state.user) {
+            return {
+              user: {
+                ...state.user,
+                points: state.user.points + points
+              }
+            };
+          }
           return {
-            user: {
-              ...state.user,
-              points: state.user.points + points
-            }
+            guestScore: state.guestScore + points
           };
-        }
-        return {
-          guestScore: state.guestScore + points
-        };
-      }),
+        });
+      },
     }),
     {
       name: 'kingdom-chronicles-auth',

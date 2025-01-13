@@ -9,6 +9,7 @@ import { ArkEscape } from './games/ark-escape/ArkEscape';
 import { BibleCharades } from './games/bible-charades/BibleCharades';
 import { BibleVerse } from './games/bible-verse/BibleVerse';
 import { TestamentQuiz } from './games/testament-quiz/TestamentQuiz';
+import { ApMoBiblePack } from './games/ap-mo-bible-pack/ApMoBiblePack';
 import { authService } from './services/auth';
 import { useAuthStore } from './store/useAuthStore';
 import { initializeAnalytics } from './services/analytics/config';
@@ -25,7 +26,7 @@ const AnalyticsTracker: React.FC = () => {
   return null;
 };
 
-export default function App() {
+const App: React.FC = () => {
   const login = useAuthStore((state) => state.login);
 
   useEffect(() => {
@@ -61,8 +62,11 @@ export default function App() {
           <Route path="/games/bible-charades" element={<BibleCharades />} />
           <Route path="/games/bible-verse" element={<BibleVerse />} />
           <Route path="/games/testament-quiz" element={<TestamentQuiz />} />
+          <Route path="/games/ap-mo-bible-pack" element={<ApMoBiblePack />} />
         </Routes>
       </div>
     </Router>
   );
-}
+};
+
+export default App;

@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Ship, Theater, Book, BookOpen } from 'lucide-react';
+import { Building2, Ship, Theater, Book, BookOpen, Scroll } from 'lucide-react';
 
 const games = [
   {
@@ -42,10 +41,18 @@ const games = [
     icon: <BookOpen className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Easy',
     players: '1'
+  },
+  {
+    id: 'ap-mo-bible-pack',
+    title: 'Ap Mo\' Bible Pack',
+    description: 'Complete Bible verses in different themed packs against the clock',
+    icon: <Scroll className="w-12 h-12 text-indigo-600" />,
+    difficulty: 'Medium',
+    players: '1'
   }
 ];
 
-export const Games: React.FC = () => {
+export const Games = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Available Games</h1>

@@ -2,10 +2,12 @@ import { useCallback } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { scoreService } from '../services/scores/scoreService';
 
-export const useGameScore = (gameType: 'kingdom-builders' | 'ark-escape' | 'bible-charades') => {
+export const useGameScore = (gameType: 'kingdom-builders' | 'ark-escape' | 'bible-charades' | 'ap-mo-bible-pack') => {
   const { user, isAuthenticated, updateScore } = useAuthStore();
 
   const handleScoreUpdate = useCallback(async (points: number) => {
+    if (points === 0) return;
+
     // Update local state
     updateScore(points);
 

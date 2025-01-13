@@ -37,7 +37,10 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {entries.map((entry) => (
-            <tr key={entry.username} className="hover:bg-gray-50">
+            <tr 
+              key={`${entry.username}-${entry.rank}`} 
+              className="hover:bg-gray-50"
+            >
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   {entry.rank <= 3 ? (
