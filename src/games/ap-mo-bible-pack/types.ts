@@ -1,11 +1,14 @@
 export type PackType = 'healing' | 'wealth' | 'wisdom';
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
+export type BibleVersion = 'NKJV' | 'KJV' | 'NIV' | 'ESV';
 
 export interface BibleVerse {
   verse: string;
   description: string;
   packType: PackType;
-  text: string;
+  versions: {
+    [key in BibleVersion]?: string;
+  };
 }
 
 export interface GameSettings {
@@ -14,6 +17,7 @@ export interface GameSettings {
   packType: PackType;
   difficulty: DifficultyLevel;
   maxAttempts: number;
+  bibleVersion: BibleVersion;
   points: {
     correct: number;
     timeBonus: number;

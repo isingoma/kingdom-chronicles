@@ -1,8 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { BIBLE_VERSES } from '../constants/verses';
-import type { BibleVerse, PackType, RoundScore, DifficultyLevel, AnswerFeedback, VerseAttempt } from '../types';
+import type { BibleVerse, PackType, RoundScore, DifficultyLevel, AnswerFeedback, VerseAttempt, BibleVersion } from '../types';
 
-export const useGameState = (initialPackType: PackType, initialDifficulty: DifficultyLevel, initialMaxAttempts: number) => {
+export const useGameState = (
+  initialPackType: PackType, 
+  initialDifficulty: DifficultyLevel, 
+  initialMaxAttempts: number,
+  initialBibleVersion: BibleVersion = 'NKJV'
+) => {
   const [currentVerse, setCurrentVerse] = useState<BibleVerse | null>(null);
   const [versesCompleted, setVersesCompleted] = useState(0);
   const [feedback, setFeedback] = useState<AnswerFeedback | null>(null);
@@ -11,13 +16,21 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
   const packTypeRef = useRef(initialPackType);
   const difficultyRef = useRef(initialDifficulty);
   const maxAttemptsRef = useRef(initialMaxAttempts);
+  const bibleVersionRef = useRef(initialBibleVersion);
   const currentAttemptsRef = useRef(initialMaxAttempts);
   const usedVersesRef = useRef<Set<string>>(new Set());
+
+  const getVerseText = useCallback((verse: BibleVerse): string => {
+    // Get text in selected version, fallback to first available version if not found
+    return verse.versions[bibleVersionRef.current] || Object.values(verse.versions)[0] || '';
+  }, []);
 
   const getNextVerse = useCallback(() => {
     const packVerses = BIBLE_VERSES.filter(v => 
       v.packType === packTypeRef.current && 
-      !usedVersesRef.current.has(v.verse)
+      !usedVersesRef.current.has(v.verse) &&
+      // Ensure verse has text in selected version
+      (v.versions[bibleVersionRef.current] || Object.values(v.versions)[0])
     );
 
     if (packVerses.length === 0) {
@@ -33,6 +46,8 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
   }, []);
 
   const calculateSimilarity = (str1: string, str2: string): number => {
+    if (!str1 || !str2) return 0;
+    
     const s1 = str1.toLowerCase().replace(/[.,!?]/g, '').trim();
     const s2 = str2.toLowerCase().replace(/[.,!?]/g, '').trim();
     
@@ -55,9 +70,10 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
 
     if (answer === null) {
       // Handle skip
+      const verseText = getVerseText(currentVerse);
       setFailedVerses(prev => [...prev, {
         verse: currentVerse.verse,
-        expectedAnswer: currentVerse.text,
+        expectedAnswer: verseText,
         userAnswer: '',
         similarity: 0,
         attempts: maxAttemptsRef.current - currentAttemptsRef.current
@@ -71,9 +87,16 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
       };
     }
 
-    const correctAnswer = difficultyRef.current === 'hard' 
-      ? currentVerse.text 
-      : currentVerse.text;
+    const correctAnswer = getVerseText(currentVerse);
+    if (!correctAnswer) {
+      console.error('No verse text available');
+      return {
+        isCorrect: false,
+        similarity: 0,
+        message: 'Error: No verse text available',
+        attemptsLeft: currentAttemptsRef.current
+      };
+    }
     
     const isCorrect = answer.toLowerCase().replace(/[.,!?]/g, '').trim() === 
                      correctAnswer.toLowerCase().replace(/[.,!?]/g, '').trim();
@@ -97,7 +120,7 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
     if (!isCorrect && currentAttemptsRef.current === 0) {
       setFailedVerses(prev => [...prev, {
         verse: currentVerse.verse,
-        expectedAnswer: currentVerse.text,
+        expectedAnswer: correctAnswer,
         userAnswer: answer,
         similarity,
         attempts: maxAttemptsRef.current
@@ -107,7 +130,7 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
 
     setFeedback(feedback);
     return feedback;
-  }, [currentVerse, getNextVerse]);
+  }, [currentVerse, getNextVerse, getVerseText]);
 
   const calculateScore = useCallback((timeLeft: number): RoundScore => ({
     points: versesCompleted * 100 + Math.floor(timeLeft * 0.5),
@@ -116,10 +139,16 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
     failedVerses
   }), [versesCompleted, failedVerses]);
 
-  const initializeGame = useCallback((packType: PackType, difficulty: DifficultyLevel, maxAttempts: number) => {
+  const initializeGame = useCallback((
+    packType: PackType, 
+    difficulty: DifficultyLevel, 
+    maxAttempts: number,
+    bibleVersion: BibleVersion
+  ) => {
     packTypeRef.current = packType;
     difficultyRef.current = difficulty;
     maxAttemptsRef.current = maxAttempts;
+    bibleVersionRef.current = bibleVersion;
     currentAttemptsRef.current = maxAttempts;
     usedVersesRef.current.clear();
     setVersesCompleted(0);
@@ -129,7 +158,12 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
   }, [getNextVerse]);
 
   const resetGame = useCallback(() => {
-    initializeGame(packTypeRef.current, difficultyRef.current, maxAttemptsRef.current);
+    initializeGame(
+      packTypeRef.current, 
+      difficultyRef.current, 
+      maxAttemptsRef.current,
+      bibleVersionRef.current
+    );
   }, [initializeGame]);
 
   useEffect(() => {
@@ -148,6 +182,7 @@ export const useGameState = (initialPackType: PackType, initialDifficulty: Diffi
     calculateScore,
     resetGame,
     initializeGame,
+    getVerseText,
     incrementVersesCompleted: useCallback(() => {
       setVersesCompleted(prev => prev + 1);
     }, [])

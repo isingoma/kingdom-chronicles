@@ -1,14 +1,21 @@
 import React from 'react';
 import { Book, AlertTriangle } from 'lucide-react';
-import type { BibleVerse, AnswerFeedback } from '../types';
+import type { BibleVerse, AnswerFeedback, DifficultyLevel } from '../types';
 
 interface VerseDisplayProps {
   verse: BibleVerse | null;
   feedback: AnswerFeedback | null;
-  difficulty?: 'easy' | 'medium' | 'hard';
+  difficulty?: DifficultyLevel;
+  selectedVersion?: string;
+  getVerseText: (verse: BibleVerse) => string;
 }
 
-export const VerseDisplay: React.FC<VerseDisplayProps> = ({ verse, feedback, difficulty = 'medium' }) => {
+export const VerseDisplay: React.FC<VerseDisplayProps> = ({ 
+  verse, 
+  feedback, 
+  difficulty = 'medium',
+  getVerseText
+}) => {
   if (!verse) {
     return (
       <div className="bg-white rounded-lg shadow-md p-8 text-center mb-8">
@@ -24,11 +31,14 @@ export const VerseDisplay: React.FC<VerseDisplayProps> = ({ verse, feedback, dif
   }
 
   const getDisplayText = () => {
+    const verseText = getVerseText(verse);
+    if (!verseText) return 'Loading verse...';
+
     if (difficulty === 'hard') {
       return 'Type the complete verse';
     }
 
-    const words = verse.text.split(' ');
+    const words = verseText.split(' ');
     if (difficulty === 'easy') {
       return words.slice(0, 4).join(' ') + '...';
     }
@@ -41,8 +51,8 @@ export const VerseDisplay: React.FC<VerseDisplayProps> = ({ verse, feedback, dif
         <Book className="w-12 h-12 text-indigo-600" />
       </div>
       
-      {/* Always show scripture reference */}
-      <h2 className="text-2xl font-bold mb-4">{verse.verse}</h2>
+      <h2 className="text-2xl font-bold mb-2">{verse.verse}</h2>
+      <p className="text-gray-600 mb-4">{verse.description}</p>
       
       <div className="bg-indigo-50 p-4 rounded-lg">
         <p className="text-lg text-indigo-900">{getDisplayText()}</p>

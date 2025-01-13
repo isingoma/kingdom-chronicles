@@ -5,8 +5,9 @@ import { TimeSelector } from '../../shared/components/TimeSelector';
 import { RoundSelector } from '../../shared/components/RoundSelector';
 import { PackTypeSelector } from './PackTypeSelector';
 import { DifficultySelector } from './DifficultySelector';
+import { BibleVersionSelector } from './BibleVersionSelector';
 import { DEFAULT_SETTINGS } from '../../shared/constants/gameSettings';
-import type { GameSettings, PackType, DifficultyLevel } from '../types';
+import type { GameSettings, PackType, DifficultyLevel, BibleVersion } from '../types';
 
 interface GameSetupProps {
   onGameStart: (settings: GameSettings) => void;
@@ -18,6 +19,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
   const [packType, setPackType] = useState<PackType>('healing');
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('medium');
   const [maxAttempts, setMaxAttempts] = useState(3);
+  const [bibleVersion, setBibleVersion] = useState<BibleVersion>('NKJV');
 
   const handleStartGame = () => {
     const settings: GameSettings = {
@@ -26,6 +28,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
       packType,
       difficulty,
       maxAttempts,
+      bibleVersion,
       points: {
         correct: 100,
         timeBonus: 0.5
@@ -42,8 +45,9 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
       
       <h2 className="text-2xl font-bold text-center mb-6">Game Setup</h2>
       
-      <div className="space-y-4 mb-6">
+      <div className="space-y-6 mb-6">
         <PackTypeSelector value={packType} onChange={setPackType} />
+        <BibleVersionSelector value={bibleVersion} onChange={setBibleVersion} />
         <DifficultySelector value={difficulty} onChange={setDifficulty} />
         <RoundSelector value={rounds} onChange={setRounds} />
         

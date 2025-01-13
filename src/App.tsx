@@ -9,7 +9,7 @@ import { ArkEscape } from './games/ark-escape/ArkEscape';
 import { BibleCharades } from './games/bible-charades/BibleCharades';
 import { BibleVerse } from './games/bible-verse/BibleVerse';
 import { TestamentQuiz } from './games/testament-quiz/TestamentQuiz';
-import { ApMoBiblePack } from './games/ap-mo-bible-pack/ApMoBiblePack';
+import { ScriptureSprint } from './games/ap-mo-bible-pack/ScriptureSprint';
 import { authService } from './services/auth';
 import { useAuthStore } from './store/useAuthStore';
 import { initializeAnalytics } from './services/analytics/config';
@@ -62,7 +62,7 @@ const App: React.FC = () => {
           <Route path="/games/bible-charades" element={<BibleCharades />} />
           <Route path="/games/bible-verse" element={<BibleVerse />} />
           <Route path="/games/testament-quiz" element={<TestamentQuiz />} />
-          <Route path="/games/ap-mo-bible-pack" element={<ApMoBiblePack />} />
+          <Route path="/games/scripture-sprint" element={<ScriptureSprint />} />
         </Routes>
       </div>
     </Router>
