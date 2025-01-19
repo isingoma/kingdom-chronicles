@@ -21,9 +21,6 @@
       },
       "api": {
         "kingdomchronicles": {}
-      },
-      "hosting": {
-        "S3AndCloudFront": {}
       }
     }
   }

@@ -12,20 +12,12 @@ const games = [
     players: '4-12'
   },
   {
-    id: 'kingdom-builders',
-    title: 'Kingdom Builders',
-    description: 'Build and manage your Biblical kingdom with wisdom and strategy',
-    icon: <Building2 className="w-12 h-12 text-indigo-600" />,
+    id: 'scripture-sprint',
+    title: 'Scripture Sprint',
+    description: 'Race against time to complete Bible verses in different themed packs',
+    icon: <Scroll className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Medium',
-    players: '1-4'
-  },
-  {
-    id: 'ark-escape',
-    title: 'Ark Escape',
-    description: 'Race against time to gather resources and build Noah\'s ark',
-    icon: <Ship className="w-12 h-12 text-indigo-600" />,
-    difficulty: 'Easy',
-    players: '1-2'
+    players: '1'
   },
   {
     id: 'bible-verse',
@@ -44,13 +36,21 @@ const games = [
     players: '1'
   },
   {
-    id: 'scripture-sprint',
-    title: 'Scripture Sprint',
-    description: 'Race against time to complete Bible verses in different themed packs',
-    icon: <Scroll className="w-12 h-12 text-indigo-600" />,
+    id: 'kingdom-builders',
+    title: 'Kingdom Builders',
+    description: 'Build and manage your Biblical kingdom with wisdom and strategy',
+    icon: <Building2 className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Medium',
-    players: '1'
-  }
+    players: '1-4'
+  },
+  {
+    id: 'ark-escape',
+    title: 'Ark Escape',
+    description: 'Race against time to gather resources and build Noah\'s ark',
+    icon: <Ship className="w-12 h-12 text-indigo-600" />,
+    difficulty: 'Easy',
+    players: '1-2'
+  },
 ];
 
 export const Games: React.FC = () => {
