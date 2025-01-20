@@ -36,7 +36,7 @@ export const Home: React.FC = () => {
           </p>
           
           <div className="flex justify-center space-x-4 mb-16">
-            <Link to="/register">
+            <Link to="/games">
               <Button size="lg">Get Started</Button>
             </Link>
             <Link to="/games">
