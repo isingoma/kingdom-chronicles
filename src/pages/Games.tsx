@@ -4,12 +4,12 @@ import { Building2, Ship, Theater, Book, BookOpen, Scroll } from 'lucide-react';
 
 const games = [
   {
-    id: 'bible-charades',
-    title: 'Bible Charades',
-    description: 'Act out and guess Biblical stories in this exciting team game',
-    icon: <Theater className="w-12 h-12 text-indigo-600" />,
+    id: 'testament-quiz',
+    title: 'Guess the Testament',
+    description: 'Quick-fire rounds of Old vs New Testament identification',
+    icon: <BookOpen className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Easy',
-    players: '4-12'
+    players: '1'
   },
   {
     id: 'scripture-sprint',
@@ -20,19 +20,19 @@ const games = [
     players: '1'
   },
   {
+    id: 'bible-charades',
+    title: 'Bible Charades',
+    description: 'Act out and guess Biblical stories in this exciting team game',
+    icon: <Theater className="w-12 h-12 text-indigo-600" />,
+    difficulty: 'Easy',
+    players: '4-12'
+  },
+  {
     id: 'bible-verse',
     title: 'Find the Bible Verse',
     description: 'Test your Bible navigation skills in this fast-paced challenge',
     icon: <Book className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Medium',
-    players: '1'
-  },
-  {
-    id: 'testament-quiz',
-    title: 'Guess the Testament',
-    description: 'Quick-fire rounds of Old vs New Testament identification',
-    icon: <BookOpen className="w-12 h-12 text-indigo-600" />,
-    difficulty: 'Easy',
     players: '1'
   },
   {
