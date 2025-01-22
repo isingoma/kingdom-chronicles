@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { FeatureCard } from '../components/features/FeatureCard';
 import { GameIcon, UsersIcon, TrophyIcon } from '../components/icons';
+import { ThemeSelector } from '../components/ui/ThemeSelector';
+import { useTheme } from '../hooks/useTheme';
 
 const features = [
   {
@@ -23,34 +25,44 @@ const features = [
 ];
 
 export const Home: React.FC = () => {
+  const { theme, setTheme } = useTheme('home');
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+    <div className={`theme-base min-h-screen ${theme === 'night' ? 'bg-gray-900' : 'bg-gradient-to-b from-indigo-50 to-white'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         <div className="text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          <h1 className={`text-5xl font-bold mb-6 slide-in ${theme === 'night' ? 'text-white' : 'text-gray-900'}`}>
             Welcome to Kingdom Chronicles
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className={`text-xl mb-8 max-w-2xl mx-auto fade-in ${theme === 'night' ? 'text-gray-300' : 'text-gray-600'}`} style={{ animationDelay: '200ms' }}>
             Join an epic journey through Bible-inspired mini-games. Build your kingdom, 
             compete with friends, and discover timeless wisdom along the way.
           </p>
           
-          <div className="flex justify-center space-x-4 mb-16">
+          <div className="flex justify-center space-x-4 mb-16 fade-in" style={{ animationDelay: '400ms' }}>
             <Link to="/games">
-              <Button size="lg">Get Started</Button>
+              <Button size="lg" className="ripple hover-pulse">Get Started</Button>
             </Link>
             <Link to="/games">
-              <Button variant="outline" size="lg">Browse Games</Button>
+              <Button variant="outline" size="lg" className="ripple hover-pulse">Browse Games</Button>
             </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-16">
             {features.map((feature, index) => (
-              <FeatureCard key={index} {...feature} />
+              <div 
+                key={index} 
+                className="fade-in"
+                style={{ animationDelay: `${600 + index * 200}ms` }}
+              >
+                <FeatureCard {...feature} />
+              </div>
             ))}
           </div>
         </div>
       </div>
+
+      <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
     </div>
   );
 };

@@ -51,7 +51,6 @@ export const ScriptureSprint: React.FC = () => {
     analyticsService.trackGameEnd('scripture-sprint', score.points, duration);
     handleScoreUpdate(score.points);
 
-    // Add current round's failed verses to total
     setAllFailedVerses(prev => [...prev, ...failedVerses]);
 
     if (currentRound >= settings.totalRounds) {
@@ -112,60 +111,58 @@ export const ScriptureSprint: React.FC = () => {
     }
   }, [resetGame, startGame, settings]);
 
-  if (showSummary) {
-    return (
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Game Complete!</h1>
-          <p className="text-gray-600">Final Score: {getTotalScore()}</p>
-        </div>
-        <GameSummary 
-          failedVerses={allFailedVerses}
-          onPlayAgain={handlePlayAgain}
-          onExit={() => window.location.href = '/games'}
-        />
-      </div>
-    );
-  }
-
-  if (!isPlaying || !settings) {
-    return (
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Scripture Sprint</h1>
-          <p className="text-gray-600">Race against time to complete Bible verses!</p>
-        </div>
-        <GameSetup onGameStart={handleGameStart} />
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold">Round {currentRound} of {settings.totalRounds}</h2>
-        <RoundTimer timeLeft={timeLeft} />
-        <div className="mt-2">
-          <span className="font-semibold">Verses Completed: </span>
-          <span className="text-green-600">{versesCompleted}</span>
-          <span className="mx-2">|</span>
-          <span className="font-semibold">Score: </span>
-          <span className="text-indigo-600">{getTotalScore()}</span>
+    <div className="theme-base theme-scripture-sprint min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="content-container">
+          {showSummary ? (
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2">Game Complete!</h1>
+              <p className="text-gray-600">Final Score: {getTotalScore()}</p>
+              <GameSummary 
+                failedVerses={allFailedVerses}
+                onPlayAgain={handlePlayAgain}
+                onExit={() => window.location.href = '/games'}
+              />
+            </div>
+          ) : !isPlaying || !settings ? (
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2">Scripture Sprint</h1>
+              <p className="text-gray-600">Race against time to complete Bible verses!</p>
+              <GameSetup onGameStart={handleGameStart} />
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold">Round {currentRound} of {settings.totalRounds}</h2>
+                <RoundTimer timeLeft={timeLeft} />
+                <div className="mt-2">
+                  <span className="font-semibold">Verses Completed: </span>
+                  <span className="text-green-600">{versesCompleted}</span>
+                  <span className="mx-2">|</span>
+                  <span className="font-semibold">Score: </span>
+                  <span className="text-indigo-600">{getTotalScore()}</span>
+                </div>
+              </div>
+
+              <div className="game-interface">
+                <VerseDisplay 
+                  verse={currentVerse}
+                  feedback={feedback}
+                  difficulty={settings.difficulty}
+                  getVerseText={getVerseText}
+                />
+                
+                <VerseInput
+                  onSubmit={handleAnswerSubmit}
+                  disabled={timeLeft === 0}
+                  attemptsLeft={feedback?.attemptsLeft}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
-
-      <VerseDisplay 
-        verse={currentVerse}
-        feedback={feedback}
-        difficulty={settings.difficulty}
-        getVerseText={getVerseText}
-      />
-      
-      <VerseInput
-        onSubmit={handleAnswerSubmit}
-        disabled={timeLeft === 0}
-        attemptsLeft={feedback?.attemptsLeft}
-      />
     </div>
   );
 };

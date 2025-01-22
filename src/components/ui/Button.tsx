@@ -12,7 +12,7 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'font-semibold rounded-lg transition-colors duration-200';
+  const baseStyles = 'font-semibold rounded-lg transition-all duration-200 ripple hover-pulse';
   
   const variants = {
     primary: 'bg-indigo-600 hover:bg-indigo-700 text-white',

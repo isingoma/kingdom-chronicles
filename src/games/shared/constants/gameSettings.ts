@@ -6,7 +6,7 @@ export const ROUND_TIMES = [
   { value: 600, label: '10 Minutes' }
 ] as const;
 
-export const ROUND_COUNTS = [3, 5, 7, 10] as const;
+export const ROUND_COUNTS = [1, 3, 5, 7, 10] as const;
 
 export const DEFAULT_SETTINGS = {
   rounds: 5,

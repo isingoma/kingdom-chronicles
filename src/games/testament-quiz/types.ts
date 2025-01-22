@@ -18,5 +18,15 @@ export interface GameSettings {
 export interface RoundScore {
   points: number;
   correctAnswers: number;
+  wrongAnswers: number;
   timeBonus: number;
+  questions: QuestionHistory[];
+}
+
+export interface QuestionHistory {
+  bookName: string;
+  description: string;
+  correctTestament: Testament;
+  userAnswer: Testament;
+  isCorrect: boolean;
 }

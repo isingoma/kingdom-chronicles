@@ -65,39 +65,35 @@ export const KingdomBuilders: React.FC = () => {
     startGame(gameSettings);
   }, [resetGame, startGame]);
 
-  if (!isPlaying || !settings) {
-    return (
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Kingdom Builders</h1>
-          <p className="text-gray-600 mb-4">Build your kingdom wisely and manage your resources</p>
-        </div>
-        <GameSetup onGameStart={handleGameStart} />
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold">Round {currentRound} of {settings.totalRounds}</h2>
-        <RoundTimer timeLeft={timeLeft} />
+    <div className="theme-base theme-kingdom-builders min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="content-container">
+          {!isPlaying || !settings ? (
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2">Kingdom Builders</h1>
+              <p className="text-gray-600 mb-4">Build your kingdom wisely and manage your resources</p>
+              <GameSetup onGameStart={handleGameStart} />
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold">Round {currentRound} of {settings.totalRounds}</h2>
+                <RoundTimer timeLeft={timeLeft} />
+              </div>
+
+              <div className="game-interface">
+                <GameStats resources={resources} score={getTotalScore()} />
+                <BuildingSelector
+                  selectedBuilding={selectedBuilding}
+                  onSelectBuilding={setSelectedBuilding}
+                />
+                <GameGrid grid={grid} onCellClick={handleCellClick} />
+              </div>
+            </>
+          )}
+        </div>
       </div>
-
-      <GameStats 
-        resources={resources} 
-        score={getTotalScore()} 
-      />
-
-      <BuildingSelector
-        selectedBuilding={selectedBuilding}
-        onSelectBuilding={setSelectedBuilding}
-      />
-
-      <GameGrid
-        grid={grid}
-        onCellClick={handleCellClick}
-      />
     </div>
   );
 };

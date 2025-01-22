@@ -3,21 +3,18 @@ import { storyService } from '../services/storyService';
 import type { GameState, Team, GameSettings, BibleStory } from '../types';
 import { analyticsService } from '../../../services/analytics/analyticsService';
 
-
-interface GameStateType {
-  currentStory: BibleStory | null;
-  teams: Team[];
-  settings: GameSettings;
-  currentRound: number;
-  timeLeft: number;
-  isPlaying: boolean;
-  roundScore: number;
-  questionsAnswered: number;
-  isLoading: boolean;
-}
+// Fisher-Yates shuffle algorithm
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
 
 export const useGameState = () => {
-  const [gameState, setGameState] = useState<GameStateType>({
+  const [gameState, setGameState] = useState<GameState>({
     currentStory: null,
     teams: [],
     settings: {
@@ -44,7 +41,17 @@ export const useGameState = () => {
     isFetchingStories.current = true;
     try {
       const newStories = await storyService.fetchStoriesBatch(mode, 'general', difficulty);
-      storiesQueue.current = [...storiesQueue.current, ...newStories];
+      // Process each story to store correct answer and shuffle options
+      const processedStories = newStories.map(story => {
+        const correctAnswer = story.options[0]; // Store original correct answer
+        const shuffledOptions = shuffleArray([...story.options]); // Shuffle a copy of options
+        return {
+          ...story,
+          correctAnswer,
+          options: shuffledOptions
+        };
+      });
+      storiesQueue.current = [...storiesQueue.current, ...processedStories];
     } catch (error) {
       console.error('Error fetching stories batch:', error);
     } finally {
@@ -62,9 +69,42 @@ export const useGameState = () => {
     }
 
     const nextStory = storiesQueue.current.shift();
-    setGameState(prev => ({ ...prev, isLoading: false, currentStory: nextStory || null }));
-    return nextStory;
+    if (nextStory) {
+      // Re-shuffle options for the next story
+      const shuffledOptions = shuffleArray([...nextStory.options]);
+      const storyWithShuffledOptions = {
+        ...nextStory,
+        options: shuffledOptions
+      };
+      setGameState(prev => ({ 
+        ...prev, 
+        isLoading: false, 
+        currentStory: storyWithShuffledOptions 
+      }));
+    } else {
+      setGameState(prev => ({ ...prev, isLoading: false, currentStory: null }));
+    }
   }, [gameState.settings.storyMode, gameState.settings.difficulty, fetchStoriesBatch]);
+
+  const makeGuess = useCallback(async (guess: string) => {
+    if (!gameState.currentStory) return;
+
+    const isCorrect = guess === gameState.currentStory.correctAnswer;
+    const points = isCorrect ? gameState.settings.points.correct : 0;
+    const timeBonus = Math.floor(gameState.timeLeft * gameState.settings.points.timeBonus);
+
+    setGameState(prev => ({
+      ...prev,
+      roundScore: prev.roundScore + points + timeBonus,
+      questionsAnswered: prev.questionsAnswered + 1,
+      teams: prev.teams.map(team => ({
+        ...team,
+        score: team.isActing ? team.score + points + timeBonus : team.score
+      }))
+    }));
+
+    await getNextStory();
+  }, [gameState, getNextStory]);
 
   const startGame = useCallback(async (teams: Team[], settings: GameSettings) => {
     analyticsService.trackGameStart('bible-charades', settings);
@@ -86,26 +126,6 @@ export const useGameState = () => {
 
     await getNextStory();
   }, [fetchStoriesBatch, getNextStory]);
-
-  const makeGuess = useCallback(async (guess: string) => {
-    if (!gameState.currentStory) return;
-
-    const isCorrect = guess === gameState.currentStory.options[0];
-    const points = isCorrect ? gameState.settings.points.correct : 0;
-    const timeBonus = Math.floor(gameState.timeLeft * gameState.settings.points.timeBonus);
-
-    setGameState(prev => ({
-      ...prev,
-      roundScore: prev.roundScore + points + timeBonus,
-      questionsAnswered: prev.questionsAnswered + 1,
-      teams: prev.teams.map(team => ({
-        ...team,
-        score: team.isActing ? team.score + points + timeBonus : team.score
-      }))
-    }));
-
-    await getNextStory();
-  }, [gameState, getNextStory]);
 
   const nextRound = useCallback(async () => {
     if (gameState.currentRound >= gameState.settings.totalRounds) {

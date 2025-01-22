@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Book } from 'lucide-react';
 import type { BibleStory } from '../types';
+import confetti from 'canvas-confetti';
 
 interface StoryDisplayProps {
   story: BibleStory;
@@ -15,6 +16,15 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, onGuess }) =>
     setSelectedAnswer(guess);
     setShowFeedback(true);
     
+    // Only trigger confetti if the answer is correct
+    if (guess === story.correctAnswer) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+    
     setTimeout(() => {
       setShowFeedback(false);
       setSelectedAnswer(null);
@@ -22,11 +32,11 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, onGuess }) =>
     }, 1500);
   };
 
-  const isCorrectAnswer = (option: string) => option === story.options[0];
+  const isCorrectAnswer = (option: string) => option === story.correctAnswer;
   
   const getAnswerStyles = (option: string) => {
     if (!showFeedback || selectedAnswer !== option) {
-      return "border-gray-200 hover:border-indigo-300 hover:bg-indigo-50";
+      return "border-gray-200 hover:border-gray-300 hover:bg-indigo-50";
     }
     return isCorrectAnswer(option)
       ? "border-green-500 bg-green-50"

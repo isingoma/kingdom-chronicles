@@ -4,7 +4,7 @@ export interface BibleVerse {
   book: string;
   chapter: number;
   verse: number;
-  options: string[]; // Array of verse reference options
+  options: string[];
 }
 
 export interface GameSettings {
@@ -16,8 +16,16 @@ export interface GameSettings {
   };
 }
 
+export interface VerseAttempt {
+  verseText: string;
+  correctReference: string;
+  userAnswer: string | null;
+  isCorrect: boolean;
+}
+
 export interface RoundScore {
   points: number;
   versesFound: number;
   timeBonus: number;
+  attempts: VerseAttempt[];
 }

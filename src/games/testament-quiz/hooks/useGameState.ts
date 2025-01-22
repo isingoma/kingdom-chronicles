@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { BIBLE_BOOKS } from '../constants/books';
-import type { BibleBook, Testament, RoundScore } from '../types';
+import type { BibleBook, Testament, RoundScore, QuestionHistory } from '../types';
 
 export const useGameState = () => {
   const [currentBook, setCurrentBook] = useState<BibleBook>(() => 
@@ -9,6 +9,7 @@ export const useGameState = () => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [lastGuessCorrect, setLastGuessCorrect] = useState<boolean | null>(null);
+  const [questionHistory, setQuestionHistory] = useState<QuestionHistory[]>([]);
 
   const getNextBook = useCallback(() => {
     const currentIndex = BIBLE_BOOKS.findIndex(b => b.name === currentBook.name);
@@ -18,7 +19,18 @@ export const useGameState = () => {
   }, [currentBook]);
 
   const makeGuess = useCallback((testament: Testament) => {
-    if (testament === currentBook.testament) {
+    const isCorrect = testament === currentBook.testament;
+    
+    // Record question history
+    setQuestionHistory(prev => [...prev, {
+      bookName: currentBook.name,
+      description: currentBook.description,
+      correctTestament: currentBook.testament,
+      userAnswer: testament,
+      isCorrect
+    }]);
+
+    if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
       setLastGuessCorrect(true);
     } else {
@@ -26,7 +38,6 @@ export const useGameState = () => {
       setLastGuessCorrect(false);
     }
     
-    // Switch to next book after a short delay
     setTimeout(() => {
       getNextBook();
       setLastGuessCorrect(null);
@@ -41,15 +52,17 @@ export const useGameState = () => {
       points: Math.max(0, basePoints + timeBonus),
       correctAnswers,
       wrongAnswers,
-      timeBonus
+      timeBonus,
+      questions: questionHistory
     };
-  }, [correctAnswers, wrongAnswers]);
+  }, [correctAnswers, wrongAnswers, questionHistory]);
 
   const resetGame = useCallback(() => {
     setCurrentBook(BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]);
     setCorrectAnswers(0);
     setWrongAnswers(0);
     setLastGuessCorrect(null);
+    setQuestionHistory([]);
   }, []);
 
   return {

@@ -10,7 +10,8 @@ export const EventCategory = {
   NAVIGATION: 'Navigation',
   GAME: 'Game',
   USER: 'User',
-  ACHIEVEMENT: 'Achievement'
+  ACHIEVEMENT: 'Achievement',
+  THEME: 'Theme'
 } as const;
 
 // Event Actions
@@ -18,6 +19,9 @@ export const EventAction = {
   // Navigation Events
   PAGE_VIEW: 'page_view',
   TAB_CLICK: 'tab_click',
+  
+  // Theme Events
+  THEME_CHANGE: 'change_theme',
   
   // Game Events
   GAME_START: 'game_start',

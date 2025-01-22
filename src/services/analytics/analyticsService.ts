@@ -1,13 +1,29 @@
 import ReactGA from 'react-ga4';
 import { EventCategory, EventAction } from './config';
 
+interface AnalyticsEvent {
+  category: string;
+  action: string;
+  label?: string;
+  value?: number;
+}
+
 class AnalyticsService {
   trackPageView(path: string) {
     ReactGA.send({ hitType: 'pageview', page: path });
   }
 
-  trackTabClick(tabName: string) {
+  trackEvent(event: AnalyticsEvent) {
     ReactGA.event({
+      category: event.category,
+      action: event.action,
+      label: event.label,
+      value: event.value
+    });
+  }
+
+  trackTabClick(tabName: string) {
+    this.trackEvent({
       category: EventCategory.NAVIGATION,
       action: EventAction.TAB_CLICK,
       label: tabName
@@ -15,7 +31,7 @@ class AnalyticsService {
   }
 
   trackGameEvent(action: string, gameType: string, additionalData?: Record<string, any>) {
-    ReactGA.event({
+    this.trackEvent({
       category: EventCategory.GAME,
       action,
       label: gameType,
@@ -24,7 +40,7 @@ class AnalyticsService {
   }
 
   trackUserEvent(action: string, userId: string) {
-    ReactGA.event({
+    this.trackEvent({
       category: EventCategory.USER,
       action,
       label: userId
@@ -32,11 +48,10 @@ class AnalyticsService {
   }
 
   trackAchievement(achievementName: string, userId: string) {
-    ReactGA.event({
+    this.trackEvent({
       category: EventCategory.ACHIEVEMENT,
       action: EventAction.ACHIEVEMENT_UNLOCKED,
-      label: achievementName,
-      userId
+      label: achievementName
     });
   }
 

@@ -1,0 +1,100 @@
+/* Theme Variables */
+:root {
+  --overlay-light: rgba(255, 255, 255, 0.98);
+  --overlay-dark: rgba(0, 0, 0, 0.7);
+  --blur-amount: 8px;
+}
+
+/* Theme Styles - Only for Home and Games pages */
+.theme-base {
+  min-height: 100vh;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Game-specific backgrounds */
+.theme-testament-quiz {
+  background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2400');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.theme-scripture-sprint {
+  background-image: url('https://images.unsplash.com/photo-1533000971552-6a962ff0b9f9?q=80&w=2400');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.theme-bible-verse {
+  background-image: url('https://images.unsplash.com/photo-1519682577862-22b62b24e493?q=80&w=2400');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.theme-kingdom-builders {
+  background-image: url('https://images.unsplash.com/photo-1602940659805-770d1b3b9911?q=80&w=2400');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.theme-bible-charades {
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2400');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.theme-ark-escape {
+  background-image: url('https://images.unsplash.com/photo-1516912481808-3406841bd33c?q=80&w=2400');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Night Theme - Only for Home and Games pages */
+.theme-night {
+  background: #111827 !important;
+  color: #e5e7eb;
+}
+
+.theme-night .content-container {
+  background: rgba(17, 24, 39, 0.95);
+  color: #e5e7eb;
+}
+
+/* Classic Theme - Only for Home and Games pages */
+.theme-classic {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
+}
+
+.theme-classic .content-container {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+/* Content Containers */
+.content-container {
+  background: var(--overlay-light);
+  backdrop-filter: blur(var(--blur-amount));
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  color: #1a202c;
+}
+
+/* Game Interface */
+.game-interface {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Stats Container */
+.stats-container {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(var(--blur-amount));
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
