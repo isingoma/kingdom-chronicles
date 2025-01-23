@@ -29,6 +29,19 @@ export const VerseDisplay: React.FC<VerseDisplayProps> = ({
     );
   }
 
+  const getDisplayText = () => {
+    const verseText = getVerseText(verse);
+    if (!verseText) return 'Loading verse...';
+
+    if (difficulty === 'hard') {
+      return 'Type the complete verse';
+    }
+
+    const words = verseText.split(' ');
+    const numWordsToShow = difficulty === 'easy' ? 4 : 3;
+    return words.slice(0, numWordsToShow).join(' ') + '...';
+  };
+
   return (
     <div className="card p-8 text-center mb-8">
       <div className="flex justify-center mb-4">
@@ -39,7 +52,7 @@ export const VerseDisplay: React.FC<VerseDisplayProps> = ({
       <p className="text-theme-secondary mb-4">{verse.description}</p>
       
       <div className="bg-indigo-50 p-4 rounded-lg">
-        <p className="text-lg text-indigo-900">{getVerseText(verse)}</p>
+        <p className="text-lg text-indigo-900">{getDisplayText()}</p>
       </div>
       
       {feedback && (
