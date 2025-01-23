@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CrownIcon, Trophy } from 'lucide-react';
+import { CrownIcon, Trophy, MessageSquare } from 'lucide-react';
 import { UserMenu } from '../auth/UserMenu';
 import { useThemeStore } from '../../store/useThemeStore';
 
@@ -39,6 +39,13 @@ export const Navbar: React.FC = () => {
               >
                 <Trophy className="w-4 h-4 mr-1" />
                 Leaderboard
+              </Link>
+              <Link 
+                to="/feedback" 
+                className="flex items-center text-theme-secondary hover:text-theme-primary px-3 py-2 rounded-md transition-all duration-300 hover:bg-indigo-50"
+              >
+                <MessageSquare className="w-4 h-4 mr-1" />
+                Feedback
               </Link>
             </div>
           </div>

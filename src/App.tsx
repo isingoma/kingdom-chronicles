@@ -4,6 +4,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Home } from './pages/Home';
 import { Games } from './pages/Games';
 import { Leaderboard } from './pages/Leaderboard';
+import { Feedback } from './pages/Feedback';
 import { KingdomBuilders } from './games/kingdom-builders/KingdomBuilders';
 import { ArkEscape } from './games/ark-escape/ArkEscape';
 import { BibleCharades } from './games/bible-charades/BibleCharades';
@@ -57,6 +58,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/games" element={<Games />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/feedback" element={<Feedback />} />
           <Route path="/games/kingdom-builders" element={<KingdomBuilders />} />
           <Route path="/games/ark-escape" element={<ArkEscape />} />
           <Route path="/games/bible-charades" element={<BibleCharades />} />
