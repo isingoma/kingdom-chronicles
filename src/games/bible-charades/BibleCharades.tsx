@@ -48,8 +48,8 @@ export const BibleCharades: React.FC = () => {
   const handleGuess = useCallback(async (guess: string) => {
     if (!currentStory) return;
     
-    const isCorrect = guess === currentStory.options[0];
-    if (isCorrect) {
+    // Only trigger confetti if the guess matches the correct answer
+    if (guess === currentStory.correctAnswer) {
       confetti({
         particleCount: 100,
         spread: 70,
