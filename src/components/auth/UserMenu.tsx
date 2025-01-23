@@ -24,9 +24,9 @@ export const UserMenu: React.FC = () => {
         {isAuthenticated ? (
           <div className="flex items-center space-x-4">
             <div className="text-sm">
-              <p className="font-medium">{user?.username}</p>
+              <p className="font-medium text-theme-primary">{user?.username}</p>
               <div className="flex items-center space-x-2">
-                <span className="text-gray-500">Total Points:</span>
+                <span className="text-theme-secondary">Total Points:</span>
                 <span className="font-semibold text-indigo-600">{user?.points}</span>
               </div>
             </div>
@@ -44,7 +44,7 @@ export const UserMenu: React.FC = () => {
           <div className="flex items-center space-x-4">
             {guestScore > 0 && (
               <div className="text-sm">
-                <span className="text-gray-500">Guest Points:</span>
+                <span className="text-theme-secondary">Guest Points:</span>
                 <span className="ml-1 font-semibold text-indigo-600">{guestScore}</span>
               </div>
             )}

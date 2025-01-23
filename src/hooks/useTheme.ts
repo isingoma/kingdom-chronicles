@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useThemeStore } from '../store/useThemeStore';
 import type { Theme } from '../components/ui/ThemeSelector';
 
 export const useTheme = (page?: 'home' | 'games') => {
-  const [theme, setTheme] = useState<Theme>('default');
+  const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
     // Only apply theme changes if we're on the home or games pages

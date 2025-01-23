@@ -37,12 +37,12 @@ export const VerseInput: React.FC<VerseInputProps> = ({
           onChange={(e) => setInput(e.target.value)}
           disabled={isDisabled}
           placeholder={isDisabled ? 'No more attempts remaining' : 'Type the rest of the verse...'}
-          className={`w-full p-4 border-2 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 resize-none h-32 ${
-            isDisabled ? 'bg-gray-100 border-gray-200' : 'border-gray-200'
+          className={`w-full p-4 border-2 rounded-lg form-input focus:ring focus:ring-indigo-200 focus:ring-opacity-50 resize-none h-32 ${
+            isDisabled ? 'bg-gray-100 border-gray-200' : ''
           }`}
         />
         {attemptsLeft !== undefined && attemptsLeft > 0 && (
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-theme-secondary">
             {attemptsLeft} {attemptsLeft === 1 ? 'attempt' : 'attempts'} remaining
           </p>
         )}

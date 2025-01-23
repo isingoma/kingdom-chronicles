@@ -3,12 +3,134 @@
   --overlay-light: rgba(255, 255, 255, 0.98);
   --overlay-dark: rgba(0, 0, 0, 0.7);
   --blur-amount: 8px;
+
+  /* Text Colors */
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-tertiary: #718096;
+  
+  /* Input Colors */
+  --input-text: #1a202c;
+  --input-bg: #ffffff;
+  --input-border: #e2e8f0;
+  --input-focus-ring: #667eea;
+
+  /* Navbar Colors */
+  --navbar-bg: #ffffff;
+  --navbar-text: #1a202c;
+  --navbar-hover: #f7fafc;
 }
 
-/* Theme Styles - Only for Home and Games pages */
+/* Night Theme Colors */
+.theme-night {
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #a0aec0;
+  
+  --input-text: #ffffff;
+  --input-bg: #2d3748;
+  --input-border: #4a5568;
+  --input-focus-ring: #667eea;
+
+  /* Navbar Colors - Night Theme */
+  --navbar-bg: #1a202c;
+  --navbar-text: #ffffff;
+  --navbar-hover: #2d3748;
+}
+
+/* Classic Theme Colors */
+.theme-classic {
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --text-tertiary: #718096;
+  
+  --input-text: #2d3748;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e0;
+  --input-focus-ring: #667eea;
+
+  /* Navbar Colors - Classic Theme */
+  --navbar-bg: #ffffff;
+  --navbar-text: #2d3748;
+  --navbar-hover: #edf2f7;
+}
+
+/* Base Theme */
 .theme-base {
   min-height: 100vh;
   transition: all 0.5s ease-in-out;
+  color: var(--text-primary);
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+}
+
+.navbar-link {
+  color: var(--text-secondary);
+}
+
+.navbar-link:hover {
+  color: var(--text-primary);
+  background-color: var(--navbar-hover);
+}
+
+/* Content Container */
+.content-container {
+  background: var(--overlay-light);
+  backdrop-filter: blur(var(--blur-amount));
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+}
+
+/* Form Elements */
+.form-label {
+  color: var(--text-primary) !important;
+}
+
+.form-input {
+  color: var(--input-text) !important;
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+
+.form-input:focus {
+  border-color: var(--input-focus-ring) !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Card Elements */
+.card {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.card-text {
+  color: var(--text-secondary);
+}
+
+/* Night Theme Overrides */
+.theme-night .content-container {
+  background: rgba(17, 24, 39, 0.95);
+}
+
+.theme-night .bg-white {
+  background-color: #1a202c !important;
+}
+
+.theme-night .text-gray-600,
+.theme-night .text-gray-700,
+.theme-night .text-gray-800 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-night .border-gray-200,
+.theme-night .border-gray-300 {
+  border-color: #4a5568 !important;
 }
 
 /* Game-specific backgrounds */
@@ -54,35 +176,17 @@
   background-attachment: fixed;
 }
 
-/* Night Theme - Only for Home and Games pages */
-.theme-night {
-  background: #111827 !important;
-  color: #e5e7eb;
+/* Utility Classes */
+.text-theme-primary {
+  color: var(--text-primary) !important;
 }
 
-.theme-night .content-container {
-  background: rgba(17, 24, 39, 0.95);
-  color: #e5e7eb;
+.text-theme-secondary {
+  color: var(--text-secondary) !important;
 }
 
-/* Classic Theme - Only for Home and Games pages */
-.theme-classic {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-}
-
-.theme-classic .content-container {
-  background: #ffffff;
-  color: #1f2937;
-}
-
-/* Content Containers */
-.content-container {
-  background: var(--overlay-light);
-  backdrop-filter: blur(var(--blur-amount));
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  color: #1a202c;
+.text-theme-tertiary {
+  color: var(--text-tertiary) !important;
 }
 
 /* Game Interface */
@@ -92,9 +196,10 @@
 
 /* Stats Container */
 .stats-container {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--input-bg);
   backdrop-filter: blur(var(--blur-amount));
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
 }
