@@ -36,7 +36,7 @@ export const ApMoBiblePack: React.FC = () => {
     getTotalScore
   } = useRoundManager();
 
-  const { handleScoreUpdate } = useGameScore('ap-mo-bible-pack');
+  const { handleScoreUpdate } = useGameScore('scripture-sprint');
 
   const handleRoundEnd = useCallback(() => {
     if (!settings) return;
@@ -44,7 +44,7 @@ export const ApMoBiblePack: React.FC = () => {
     const score = calculateScore(timeLeft);
     const duration = settings.timePerRound - timeLeft;
     
-    analyticsService.trackGameEnd('ap-mo-bible-pack', score.points, duration);
+    analyticsService.trackGameEnd('scripture-sprint', score.points, duration);
     handleScoreUpdate(score.points);
     endRound(score);
     resetGame();
@@ -63,7 +63,7 @@ export const ApMoBiblePack: React.FC = () => {
   }, [isPlaying, timeLeft, handleRoundEnd]);
 
   const handleGameStart = useCallback((gameSettings: GameSettings) => {
-    analyticsService.trackGameStart('ap-mo-bible-pack', gameSettings);
+    analyticsService.trackGameStart('scripture-sprint', gameSettings);
     initializeGame(gameSettings.packType, gameSettings.difficulty, gameSettings.maxAttempts);
     startGame(gameSettings);
   }, [initializeGame, startGame]);

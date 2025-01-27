@@ -2,39 +2,7 @@ import { BibleVerse } from '../types';
 
 export const BIBLE_VERSES: BibleVerse[] = [
   // HEALING VERSES
-  {
-    verse: 'Jeremiah 17:14',
-    description: 'Prayer for healing and salvation',
-    packType: 'healing',
-    versions: {
-      NKJV: 'Heal me, O LORD, and I shall be healed; Save me, and I shall be saved, For You are my praise',
-      KJV: 'Heal me, O LORD, and I shall be healed; save me, and I shall be saved: for thou art my praise',
-      NIV: 'Heal me, LORD, and I will be healed; save me and I will be saved, for you are the one I praise',
-      ESV: 'Heal me, O LORD, and I shall be healed; save me, and I shall be saved, for you are my praise'
-    }
-  },
-  {
-    verse: 'Psalm 103:2-3',
-    description: 'Gods benefits include healing',
-    packType: 'healing',
-    versions: {
-      NKJV: 'Bless the LORD, O my soul, And forget not all His benefits: Who forgives all your iniquities, Who heals all your diseases',
-      KJV: 'Bless the LORD, O my soul, and forget not all his benefits: Who forgiveth all thine iniquities; who healeth all thy diseases',
-      NIV: 'Praise the LORD, my soul, and forget not all his benefits— who forgives all your sins and heals all your diseases',
-      ESV: 'Bless the LORD, O my soul, and forget not all his benefits, who forgives all your iniquity, who heals all your diseases'
-    }
-  },
-  {
-    verse: 'Isaiah 53:5',
-    description: 'Healing through Christs wounds',
-    packType: 'healing',
-    versions: {
-      NKJV: 'But He was wounded for our transgressions, He was bruised for our iniquities; The chastisement for our peace was upon Him, And by His stripes we are healed',
-      KJV: 'But he was wounded for our transgressions, he was bruised for our iniquities: the chastisement of our peace was upon him; and with his stripes we are healed',
-      NIV: 'But he was pierced for our transgressions, he was crushed for our iniquities; the punishment that brought us peace was on him, and by his wounds we are healed',
-      ESV: 'But he was pierced for our transgressions; he was crushed for our iniquities; upon him was the chastisement that brought us peace, and with his wounds we are healed'
-    }
-  },
+ 
   {
     verse: 'Matthew 8:17',
     description: 'Jesus bearing our sicknesses',
@@ -46,72 +14,7 @@ export const BIBLE_VERSES: BibleVerse[] = [
       ESV: 'This was to fulfill what was spoken by the prophet Isaiah: He took our illnesses and bore our diseases'
     }
   },
-  {
-    verse: '3 John 1:2',
-    description: 'Prayer for health and prosperity',
-    packType: 'healing',
-    versions: {
-      NKJV: 'Beloved, I pray that you may prosper in all things and be in health, just as your soul prospers',
-      KJV: 'Beloved, I wish above all things that thou mayest prosper and be in health, even as thy soul prospereth',
-      NIV: 'Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is getting along well',
-      ESV: 'Beloved, I pray that all may go well with you and that you may be in good health, as it goes well with your soul'
-    }
-  },
-  {
-    verse: 'Psalm 107:20',
-    description: 'Gods Word brings healing',
-    packType: 'healing',
-    versions: {
-      NKJV: 'He sent His word and healed them, And delivered them from their destructions',
-      KJV: 'He sent his word, and healed them, and delivered them from their destructions',
-      NIV: 'He sent out his word and healed them; he rescued them from the grave',
-      ESV: 'He sent out his word and healed them, and delivered them from their destruction'
-    }
-  },
-  {
-    verse: 'Proverbs 4:20-22',
-    description: 'Gods Words bring health',
-    packType: 'healing',
-    versions: {
-      NKJV: 'My son, give attention to my words; Incline your ear to my sayings. Do not let them depart from your eyes; Keep them in the midst of your heart; For they are life to those who find them, And health to all their flesh',
-      KJV: 'My son, attend to my words; incline thine ear unto my sayings. Let them not depart from thine eyes; keep them in the midst of thine heart. For they are life unto those that find them, and health to all their flesh',
-      NIV: 'My son, pay attention to what I say; turn your ear to my words. Do not let them out of your sight, keep them within your heart; for they are life to those who find them and health to ones whole body',
-      ESV: 'My son, be attentive to my words; incline your ear to my sayings. Let them not escape from your sight; keep them within your heart. For they are life to those who find them, and healing to all their flesh'
-    }
-  },
-  {
-    verse: 'Exodus 23:25',
-    description: 'Serving God brings health',
-    packType: 'healing',
-    versions: {
-      NKJV: 'So you shall serve the LORD your God, and He will bless your bread and your water. And I will take sickness away from the midst of you',
-      KJV: 'And ye shall serve the LORD your God, and he shall bless thy bread, and thy water; and I will take sickness away from the midst of thee',
-      NIV: 'Worship the LORD your God, and his blessing will be on your food and water. I will take away sickness from among you',
-      ESV: 'You shall serve the LORD your God, and he will bless your bread and your water, and I will take sickness away from among you'
-    }
-  },
-  {
-    verse: 'Mark 16:17-18',
-    description: 'Signs of believers including healing',
-    packType: 'healing',
-    versions: {
-      NKJV: 'And these signs will follow those who believe: In My name they will cast out demons; they will speak with new tongues; they will take up serpents; and if they drink anything deadly, it will by no means hurt them; they will lay hands on the sick, and they will recover',
-      KJV: 'And these signs shall follow them that believe; In my name shall they cast out devils; they shall speak with new tongues; They shall take up serpents; and if they drink any deadly thing, it shall not hurt them; they shall lay hands on the sick, and they shall recover',
-      NIV: 'And these signs will accompany those who believe: In my name they will drive out demons; they will speak in new tongues; they will pick up snakes with their hands; and when they drink deadly poison, it will not hurt them at all; they will place their hands on sick people, and they will get well',
-      ESV: 'And these signs will accompany those who believe: in my name they will cast out demons; they will speak in new tongues; they will pick up serpents with their hands; and if they drink any deadly poison, it will not hurt them; they will lay their hands on the sick, and they will recover'
-    }
-  },
-  {
-    verse: 'Acts 10:38',
-    description: 'Jesus healing ministry',
-    packType: 'healing',
-    versions: {
-      NKJV: 'How God anointed Jesus of Nazareth with the Holy Spirit and with power, who went about doing good and healing all who were oppressed by the devil, for God was with Him',
-      KJV: 'How God anointed Jesus of Nazareth with the Holy Ghost and with power: who went about doing good, and healing all that were oppressed of the devil; for God was with him',
-      NIV: 'How God anointed Jesus of Nazareth with the Holy Spirit and power, and how he went around doing good and healing all who were under the power of the devil, because God was with him',
-      ESV: 'How God anointed Jesus of Nazareth with the Holy Spirit and with power. He went about doing good and healing all who were oppressed by the devil, for God was with him'
-    }
-  },
+  
 
   // WEALTH VERSES
   {

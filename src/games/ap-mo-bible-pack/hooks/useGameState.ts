@@ -48,13 +48,20 @@ export const useGameState = (
   const calculateSimilarity = (str1: string, str2: string): number => {
     if (!str1 || !str2) return 0;
     
-    const s1 = str1.toLowerCase().replace(/[.,!?]/g, '').trim();
-    const s2 = str2.toLowerCase().replace(/[.,!?]/g, '').trim();
-    
+    // Normalize text: lowercase, remove punctuation, replace newlines and extra spaces with single spaces
+    const normalizeText = (text: string) =>
+      text.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+
+    const s1 = normalizeText(str1);
+    const s2 = normalizeText(str2);
+
     const words1 = s1.split(' ');
     const words2 = s2.split(' ');
-    
+
+    // Find common words
     const commonWords = words1.filter(word => words2.includes(word));
+
+    // Calculate similarity as a percentage
     return (commonWords.length * 2) / (words1.length + words2.length) * 100;
   };
 
@@ -98,8 +105,11 @@ export const useGameState = (
       };
     }
     
-    const isCorrect = answer.toLowerCase().replace(/[.,!?]/g, '').trim() === 
-                     correctAnswer.toLowerCase().replace(/[.,!?]/g, '').trim();
+    // Adjusted comparison to ignore newlines
+    const normalizeText = (text: string) =>
+      text.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+
+    const isCorrect = normalizeText(answer) === normalizeText(correctAnswer);
     
     const similarity = calculateSimilarity(answer, correctAnswer);
     currentAttemptsRef.current--;

@@ -40,7 +40,7 @@ export const ScriptureSprint: React.FC = () => {
     getTotalScore
   } = useRoundManager();
 
-  const { handleScoreUpdate } = useGameScore('ap-mo-bible-pack');
+  const { handleScoreUpdate } = useGameScore('scripture-sprint');
 
   const handleRoundEnd = useCallback(() => {
     if (!settings) return;
