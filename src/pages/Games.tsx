@@ -40,7 +40,7 @@ const games = [
   {
     id: 'kingdom-builders',
     title: 'Kingdom Builders',
-    description: 'Build and manage your Biblical kingdom with wisdom and strategy',
+    description: 'Build and manage your Biblical kingdom with wisdom and strategy. Recommended for ages under 10.',
     icon: <Building2 className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Medium',
     players: '1-4'
@@ -48,7 +48,7 @@ const games = [
   {
     id: 'ark-escape',
     title: 'Ark Escape',
-    description: 'Race against time to gather resources and build Noah\'s ark',
+    description: 'Race against time to gather resources and build Noah\'s ark. Perfect for children under 10 years old.',
     icon: <Ship className="w-12 h-12 text-indigo-600" />,
     difficulty: 'Easy',
     players: '1-2'

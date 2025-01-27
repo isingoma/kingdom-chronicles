@@ -9,15 +9,15 @@ export const Feedback: React.FC = () => {
     {
       icon: <Mail className="w-8 h-8 text-indigo-600" />,
       title: 'Email',
-      value: 'masikotimo@gmail.com',
+      value: 'support@kingdomchroniclesug.com',
       link: 'mailto:masikotimo@gmail.com',
       description: 'Send us your detailed feedback via email'
     },
     {
       icon: <MessageCircle className="w-8 h-8 text-green-600" />,
       title: 'WhatsApp',
-      value: '+256706810287',
-      link: 'https://wa.me/256706810287',
+      value: '+256787219625',
+      link: 'https://wa.me/256787219625',
       description: 'Chat with us on WhatsApp'
     },
     {
