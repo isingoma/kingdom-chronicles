@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Home } from './pages/Home';
 import { Games } from './pages/Games';
@@ -25,6 +25,19 @@ const AnalyticsTracker: React.FC = () => {
   }, [location]);
 
   return null;
+};
+
+// NotFound component that redirects to /games
+const NotFound = () => {
+  const location = useLocation();
+  
+  // If the path starts with /games/, redirect to /games
+  if (location.pathname.startsWith('/games/')) {
+    return <Navigate to="/games" replace />;
+  }
+  
+  // For all other paths, redirect to home
+  return <Navigate to="/" replace />;
 };
 
 const App: React.FC = () => {
@@ -65,6 +78,7 @@ const App: React.FC = () => {
           <Route path="/games/bible-verse" element={<BibleVerse />} />
           <Route path="/games/testament-quiz" element={<TestamentQuiz />} />
           <Route path="/games/scripture-sprint" element={<ScriptureSprint />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>

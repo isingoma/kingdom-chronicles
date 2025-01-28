@@ -16,10 +16,8 @@ export const PackTypeSelector: React.FC<PackTypeSelectorProps> = ({ value, onCha
       <div className="grid grid-cols-3 gap-4">
         <button
           onClick={() => onChange('healing')}
-          className={`flex flex-col items-center p-4 rounded-lg border-2 transition-colors ${
-            value === 'healing' 
-              ? 'border-pink-500 bg-pink-50' 
-              : 'border-gray-200 hover:border-pink-200'
+          className={`pack-button healing flex flex-col items-center p-4 rounded-lg border-2 transition-colors ${
+            value === 'healing' ? 'active' : ''
           }`}
         >
           <Heart className="w-8 h-8 text-pink-500 mb-2" />
@@ -28,10 +26,8 @@ export const PackTypeSelector: React.FC<PackTypeSelectorProps> = ({ value, onCha
 
         <button
           onClick={() => onChange('wealth')}
-          className={`flex flex-col items-center p-4 rounded-lg border-2 transition-colors ${
-            value === 'wealth' 
-              ? 'border-yellow-500 bg-yellow-50' 
-              : 'border-gray-200 hover:border-yellow-200'
+          className={`pack-button wealth flex flex-col items-center p-4 rounded-lg border-2 transition-colors ${
+            value === 'wealth' ? 'active' : ''
           }`}
         >
           <Coins className="w-8 h-8 text-yellow-500 mb-2" />
@@ -40,10 +36,8 @@ export const PackTypeSelector: React.FC<PackTypeSelectorProps> = ({ value, onCha
 
         <button
           onClick={() => onChange('wisdom')}
-          className={`flex flex-col items-center p-4 rounded-lg border-2 transition-colors ${
-            value === 'wisdom' 
-              ? 'border-blue-500 bg-blue-50' 
-              : 'border-gray-200 hover:border-blue-200'
+          className={`pack-button wisdom flex flex-col items-center p-4 rounded-lg border-2 transition-colors ${
+            value === 'wisdom' ? 'active' : ''
           }`}
         >
           <Brain className="w-8 h-8 text-blue-500 mb-2" />

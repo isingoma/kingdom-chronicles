@@ -15,7 +15,7 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
   onExit 
 }) => {
   return (
-    <div className="card p-6">
+    <div className="bg-theme-bg p-6 rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-theme-primary">Game Summary</h2>
       
       {failedVerses.length > 0 ? (
@@ -23,20 +23,20 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
           <h3 className="text-lg font-semibold mb-4 text-theme-primary">Verses to Review:</h3>
           <div className="space-y-6 mb-8">
             {failedVerses.map((attempt, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-lg">
+              <div key={index} className="bg-theme-card p-4 rounded-lg">
                 <div className="font-medium text-theme-primary mb-2">{attempt.verse}</div>
                 <div className="space-y-2 text-sm">
                   <div>
-                    <span className="text-theme-secondary">Expected: </span>
-                    <span className="text-green-600">{attempt.expectedAnswer}</span>
+                    <span className="text-theme-secondary font-medium">Expected: </span>
+                    <span className="text-green-500">{attempt.expectedAnswer}</span>
                   </div>
                   <div>
-                    <span className="text-theme-secondary">Your answer: </span>
-                    <span className="text-red-600">{attempt.userAnswer || '(skipped)'}</span>
+                    <span className="text-theme-secondary font-medium">Your answer: </span>
+                    <span className="text-red-500">{attempt.userAnswer || '(skipped)'}</span>
                   </div>
                   <div>
-                    <span className="text-theme-secondary">Similarity: </span>
-                    <span>{Math.round(attempt.similarity)}%</span>
+                    <span className="text-theme-secondary font-medium">Similarity: </span>
+                    <span className="text-theme-primary">{Math.round(attempt.similarity)}%</span>
                   </div>
                 </div>
               </div>
@@ -44,7 +44,7 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
           </div>
         </>
       ) : (
-        <p className="text-green-600 font-medium mb-8">
+        <p className="text-green-500 font-medium mb-8">
           Perfect! You completed all verses correctly!
         </p>
       )}

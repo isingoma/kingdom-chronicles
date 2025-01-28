@@ -27,26 +27,22 @@ export const TestamentSelector: React.FC<TestamentSelectorProps> = ({
         <button
           onClick={() => onSelect('old')}
           disabled={disabled}
-          className={`flex flex-col items-center p-6 rounded-lg border-2 transition-colors ${
-            disabled 
-              ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
-              : 'bg-amber-50 border-amber-200 hover:bg-amber-100'
+          className={`testament-button old flex flex-col items-center p-6 rounded-lg border-2 transition-colors ${
+            disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'
           }`}
         >
-          <Scroll className="w-12 h-12 text-amber-600 mb-2" />
+          <Scroll className="w-12 h-12 mb-2" />
           <span className="text-lg font-semibold">Old Testament</span>
         </button>
 
         <button
           onClick={() => onSelect('new')}
           disabled={disabled}
-          className={`flex flex-col items-center p-6 rounded-lg border-2 transition-colors ${
-            disabled 
-              ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
-              : 'bg-indigo-50 border-indigo-200 hover:bg-indigo-100'
+          className={`testament-button new flex flex-col items-center p-6 rounded-lg border-2 transition-colors ${
+            disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'
           }`}
         >
-          <BookOpen className="w-12 h-12 text-indigo-600 mb-2" />
+          <BookOpen className="w-12 h-12 mb-2" />
           <span className="text-lg font-semibold">New Testament</span>
         </button>
       </div>
