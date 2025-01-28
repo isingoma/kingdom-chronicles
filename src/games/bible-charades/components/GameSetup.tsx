@@ -17,7 +17,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
   const [team2Name, setTeam2Name] = useState('Team 2');
   const [rounds, setRounds] = useState(DEFAULT_SETTINGS.rounds);
   const [timePerRound, setTimePerRound] = useState(DEFAULT_SETTINGS.timePerRound);
-  const [storyMode, setStoryMode] = useState<StoryGenerationMode>('chatgpt');
+  const [storyMode, setStoryMode] = useState<StoryGenerationMode>('static');
   const [difficulty, setDifficulty] = useState<GameDifficulty>('medium');
 
   const handleStartGame = () => {
