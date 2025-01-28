@@ -16,7 +16,6 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, onGuess }) =>
     setSelectedAnswer(guess);
     setShowFeedback(true);
     
-    // Only trigger confetti if the answer is correct
     if (guess === story.correctAnswer) {
       confetti({
         particleCount: 100,
@@ -36,7 +35,7 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, onGuess }) =>
   
   const getAnswerStyles = (option: string) => {
     if (!showFeedback || selectedAnswer !== option) {
-      return "border-gray-200 hover:border-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900";
+      return "border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-indigo-900";
     }
     return isCorrectAnswer(option)
       ? "border-green-500 bg-green-50 dark:bg-green-900"
@@ -46,7 +45,7 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, onGuess }) =>
   return (
     <div className="space-y-6">
       {/* Story Visual Section */}
-      <div className="card p-6">
+      <div className="bg-theme-bg p-6 rounded-lg">
         {story.images && story.images.length > 0 ? (
           <img 
             src={story.images[0].url} 
@@ -54,23 +53,25 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, onGuess }) =>
             className="w-full h-64 object-cover rounded-lg mb-4"
           />
         ) : (
-          <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg mb-4">
+          <div className="bg-theme-card p-6 rounded-lg mb-4">
             <p className="text-theme-primary text-lg text-center leading-relaxed">
               {story.fallbackDescription}
             </p>
           </div>
         )}
         
-        <div className="flex items-center justify-center bg-indigo-50 dark:bg-indigo-900 p-4 rounded-lg">
-          <Book className="w-6 h-6 text-indigo-600 dark:text-indigo-400 mr-2" />
-          <p className="text-lg font-semibold text-theme-primary">
-            Scripture: {story.scripture}
-          </p>
+        <div className="bg-theme-card p-4 rounded-lg">
+          <div className="flex items-center justify-center">
+            <Book className="w-6 h-6 text-indigo-600 mr-2" />
+            <p className="text-lg font-semibold text-theme-primary">
+              Scripture: {story.scripture}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Answer Options */}
-      <div className="card p-6">
+      <div className="bg-theme-bg p-6 rounded-lg">
         <h3 className="text-xl font-bold text-center mb-6 text-theme-primary">Select Your Answer</h3>
         <div className="space-y-3">
           {story.options.map((option) => (
