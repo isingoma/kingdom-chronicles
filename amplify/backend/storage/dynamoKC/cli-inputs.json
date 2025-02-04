@@ -1,0 +1,22 @@
+{
+  "resourceName": "dynamoKC",
+  "tableName": "KingdomChroniclesScores",
+  "partitionKey": {
+    "fieldName": "PK",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "SK",
+    "fieldType": "string"
+  },
+  "gsi": [
+    {
+      "name": "GSI1",
+      "partitionKey": {
+        "fieldName": "SK",
+        "fieldType": "string"
+      }
+    }
+  ],
+  "triggerFunctions": []
+}

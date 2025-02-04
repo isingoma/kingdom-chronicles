@@ -9,7 +9,7 @@ import type { GameScore, LeaderboardEntry, GameScoreUpdate } from './types';
 
 class ScoreService {
   private client: DynamoDBDocumentClient;
-  private readonly TABLE_NAME = 'KingdomChroniclesScores-dev-dev';
+  private readonly TABLE_NAME = 'KingdomChroniclesScores-dev';
 
   constructor() {
     const ddbClient = new DynamoDBClient({
