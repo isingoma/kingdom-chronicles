@@ -1,31 +1,39 @@
 import { useState, useCallback } from 'react';
 import { BIBLE_BOOKS } from '../constants/books';
-import type { BibleBook, Testament, RoundScore, QuestionHistory } from '../types';
+import { BIBLE_STORIES } from '../constants/stories';
+import type { BibleBook, Testament, RoundScore, QuestionHistory, GameMode } from '../types';
+import { timerSound } from '../../../services/audio/timerSound';
 
-export const useGameState = () => {
-  const [currentBook, setCurrentBook] = useState<BibleBook>(() => 
-    BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]
+export const useGameState = (gameMode: GameMode = 'books') => {
+  const [currentItem, setCurrentItem] = useState<BibleBook | any>(() => 
+    gameMode === 'books' 
+      ? BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]
+      : BIBLE_STORIES[Math.floor(Math.random() * BIBLE_STORIES.length)]
   );
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [lastGuessCorrect, setLastGuessCorrect] = useState<boolean | null>(null);
   const [questionHistory, setQuestionHistory] = useState<QuestionHistory[]>([]);
 
-  const getNextBook = useCallback(() => {
-    const currentIndex = BIBLE_BOOKS.findIndex(b => b.name === currentBook.name);
-    const remainingBooks = BIBLE_BOOKS.filter((_, index) => index !== currentIndex);
-    const nextBook = remainingBooks[Math.floor(Math.random() * remainingBooks.length)];
-    setCurrentBook(nextBook);
-  }, [currentBook]);
+  const getNextItem = useCallback(() => {
+    const items = gameMode === 'books' ? BIBLE_BOOKS : BIBLE_STORIES;
+    const currentIndex = items.findIndex(item => 
+      gameMode === 'books' 
+        ? item.name === (currentItem as BibleBook).name
+        : item.title === currentItem.title
+    );
+    const remainingItems = items.filter((_, index) => index !== currentIndex);
+    const nextItem = remainingItems[Math.floor(Math.random() * remainingItems.length)];
+    setCurrentItem(nextItem);
+  }, [currentItem, gameMode]);
 
   const makeGuess = useCallback((testament: Testament) => {
-    const isCorrect = testament === currentBook.testament;
+    const isCorrect = testament === currentItem.testament;
     
-    // Record question history
     setQuestionHistory(prev => [...prev, {
-      bookName: currentBook.name,
-      description: currentBook.description,
-      correctTestament: currentBook.testament,
+      bookName: gameMode === 'books' ? currentItem.name : currentItem.title,
+      description: currentItem.description,
+      correctTestament: currentItem.testament,
       userAnswer: testament,
       isCorrect
     }]);
@@ -39,10 +47,10 @@ export const useGameState = () => {
     }
     
     setTimeout(() => {
-      getNextBook();
+      getNextItem();
       setLastGuessCorrect(null);
     }, 1000);
-  }, [currentBook, getNextBook]);
+  }, [currentItem, gameMode, getNextItem]);
 
   const calculateScore = useCallback((timeLeft: number): RoundScore => {
     const basePoints = (correctAnswers * 100) - (wrongAnswers * 50);
@@ -58,15 +66,16 @@ export const useGameState = () => {
   }, [correctAnswers, wrongAnswers, questionHistory]);
 
   const resetGame = useCallback(() => {
-    setCurrentBook(BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]);
+    const items = gameMode === 'books' ? BIBLE_BOOKS : BIBLE_STORIES;
+    setCurrentItem(items[Math.floor(Math.random() * items.length)]);
     setCorrectAnswers(0);
     setWrongAnswers(0);
     setLastGuessCorrect(null);
     setQuestionHistory([]);
-  }, []);
+  }, [gameMode]);
 
   return {
-    currentBook,
+    currentItem,
     makeGuess,
     calculateScore,
     resetGame,

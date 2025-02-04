@@ -8,19 +8,20 @@ import { GameSetup } from './components/GameSetup';
 import { BookDisplay } from './components/BookDisplay';
 import { TestamentSelector } from './components/TestamentSelector';
 import { GameOver } from './components/GameOver';
-import type { GameSettings, Testament } from './types';
+import type { GameSettings, Testament, GameMode } from './types';
 import { analyticsService } from '../../services/analytics/analyticsService';
 import confetti from 'canvas-confetti';
 
 export const TestamentQuiz: React.FC = () => {
   const {
-    currentBook,
+    currentItem,
     makeGuess,
     calculateScore,
     resetGame,
     correctAnswers,
     wrongAnswers,
-    lastGuessCorrect
+    lastGuessCorrect,
+    gameMode
   } = useGameState();
 
   const {
@@ -74,7 +75,7 @@ export const TestamentQuiz: React.FC = () => {
   }, []);
 
   const handleTestamentSelect = (testament: Testament) => {
-    const isCorrect = testament === currentBook.testament;
+    const isCorrect = testament === currentItem?.testament;
     if (isCorrect) {
       handleCorrectGuess();
     }
@@ -99,7 +100,7 @@ export const TestamentQuiz: React.FC = () => {
               <div className="max-w-4xl mx-auto p-4">
                 <div className="text-center mb-8">
                   <h1 className="text-3xl font-bold mb-2">Guess the Testament</h1>
-                  <p className="text-gray-600">Test your knowledge of Bible books!</p>
+                  <p className="text-gray-600">Test your knowledge of Bible books and stories!</p>
                 </div>
                 <GameSetup onGameStart={handleGameStart} />
               </div>
@@ -122,7 +123,7 @@ export const TestamentQuiz: React.FC = () => {
               </div>
 
               <div className="game-interface">
-                <BookDisplay book={currentBook} />
+                <BookDisplay book={currentItem} gameMode={settings.gameMode} />
                 <TestamentSelector
                   onSelect={handleTestamentSelect}
                   lastGuessCorrect={lastGuessCorrect}

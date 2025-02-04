@@ -1,4 +1,5 @@
 export type Testament = 'old' | 'new';
+export type GameMode = 'books' | 'stories';
 
 export interface BibleBook {
   name: string;
@@ -6,9 +7,18 @@ export interface BibleBook {
   description: string;
 }
 
+export interface BibleStory {
+  id: string;
+  title: string;
+  description: string;
+  testament: Testament;
+  scripture: string;
+}
+
 export interface GameSettings {
   totalRounds: number;
   timePerRound: number;
+  gameMode: GameMode;
   points: {
     correct: number;
     timeBonus: number;

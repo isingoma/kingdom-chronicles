@@ -27,16 +27,8 @@ const AnalyticsTracker: React.FC = () => {
   return null;
 };
 
-// NotFound component that redirects to /games
+// Simplified NotFound component
 const NotFound = () => {
-  const location = useLocation();
-  
-  // If the path starts with /games/, redirect to /games
-  if (location.pathname.startsWith('/games/')) {
-    return <Navigate to="/games" replace />;
-  }
-  
-  // For all other paths, redirect to home
   return <Navigate to="/" replace />;
 };
 

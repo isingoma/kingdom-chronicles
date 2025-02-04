@@ -1,7 +1,8 @@
 import { useState, useCallback, useRef } from 'react';
 import { storyService } from '../services/storyService';
-import type { GameState, Team, GameSettings, BibleStory } from '../types';
+import type { GameState, Team, GameSettings, BibleStory, GameDifficulty, StoryGenerationMode } from '../types';
 import { analyticsService } from '../../../services/analytics/analyticsService';
+import { timerSound } from '../../../services/audio/timerSound';
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -29,29 +30,43 @@ export const useGameState = () => {
     isPlaying: false,
     roundScore: 0,
     questionsAnswered: 0,
-    isLoading: false
+    isLoading: false,
+    currentTeamIndex: 0
   });
 
   const storiesQueue = useRef<BibleStory[]>([]);
+  const usedStoryIds = useRef<Set<string>>(new Set());
   const isFetchingStories = useRef(false);
 
-  const fetchStoriesBatch = useCallback(async (mode: string, difficulty: string) => {
+  const fetchStoriesBatch = useCallback(async (mode: StoryGenerationMode, difficulty: GameDifficulty) => {
     if (isFetchingStories.current) return;
     
     isFetchingStories.current = true;
     try {
+      console.log("is the difficulty level being passed",difficulty)
       const newStories = await storyService.fetchStoriesBatch(mode, 'general', difficulty);
-      // Process each story to store correct answer and shuffle options
-      const processedStories = newStories.map(story => {
-        const correctAnswer = story.options[0]; // Store original correct answer
-        const shuffledOptions = shuffleArray([...story.options]); // Shuffle a copy of options
+      // Filter stories by difficulty and exclude used ones
+
+      console.log("The new stories",newStories)
+      const filteredStories = newStories.filter(story => 
+        story.difficulty === difficulty && !usedStoryIds.current.has(story.id)
+      );
+      console.log("filteredStories",filteredStories)
+      
+      const processedStories = filteredStories.map(story => {
+        const correctAnswer = story.options[0];
+        const shuffledOptions = shuffleArray([...story.options]);
         return {
           ...story,
           correctAnswer,
           options: shuffledOptions
         };
       });
+
+      console.log("processedStories",processedStories)
+      
       storiesQueue.current = [...storiesQueue.current, ...processedStories];
+      console.log("storiesQueue.currents",storiesQueue.current)
     } catch (error) {
       console.error('Error fetching stories batch:', error);
     } finally {
@@ -61,16 +76,20 @@ export const useGameState = () => {
 
   const getNextStory = useCallback(async () => {
     if (storiesQueue.current.length < 3) {
-      setGameState(prev => ({ ...prev, isLoading: true }));
-      await fetchStoriesBatch(
-        gameState.settings.storyMode,
-        gameState.settings.difficulty
-      );
+      setGameState(prev => {
+        console.log("getting next story", prev.settings.storyMode, prev.settings.difficulty);
+        // Use the settings from prev state to ensure we have latest values
+        fetchStoriesBatch(
+          prev.settings.storyMode as StoryGenerationMode,
+          prev.settings.difficulty as GameDifficulty
+        );
+        return { ...prev, isLoading: true };
+      });
     }
 
     const nextStory = storiesQueue.current.shift();
     if (nextStory) {
-      // Re-shuffle options for the next story
+      usedStoryIds.current.add(nextStory.id);
       const shuffledOptions = shuffleArray([...nextStory.options]);
       const storyWithShuffledOptions = {
         ...nextStory,
@@ -84,7 +103,7 @@ export const useGameState = () => {
     } else {
       setGameState(prev => ({ ...prev, isLoading: false, currentStory: null }));
     }
-  }, [gameState.settings.storyMode, gameState.settings.difficulty, fetchStoriesBatch]);
+  }, [fetchStoriesBatch]); // Remove gameState.settings from dependency array
 
   const makeGuess = useCallback(async (guess: string) => {
     if (!gameState.currentStory) return;
@@ -108,6 +127,16 @@ export const useGameState = () => {
 
   const startGame = useCallback(async (teams: Team[], settings: GameSettings) => {
     analyticsService.trackGameStart('bible-charades', settings);
+    usedStoryIds.current.clear();
+    storiesQueue.current = []; // Clear existing stories
+    
+    // First fetch stories
+    await fetchStoriesBatch(
+      settings.storyMode as StoryGenerationMode, 
+      settings.difficulty as GameDifficulty
+    );
+
+    // Then set game state
     setGameState(prev => ({
       ...prev,
       teams,
@@ -117,40 +146,67 @@ export const useGameState = () => {
       isPlaying: true,
       roundScore: 0,
       questionsAnswered: 0,
-      isLoading: true
+      isLoading: true,
+      currentTeamIndex: 0
     }));
 
-    if (settings.storyMode !== 'static') {
-      await fetchStoriesBatch(settings.storyMode, settings.difficulty);
-    }
-
+    // Finally get the first story
     await getNextStory();
   }, [fetchStoriesBatch, getNextStory]);
 
   const nextRound = useCallback(async () => {
-    if (gameState.currentRound >= gameState.settings.totalRounds) {
+    const allTeamsPlayed = gameState.currentTeamIndex >= gameState.teams.length - 1;
+    const isLastRound = gameState.currentRound >= gameState.settings.totalRounds && allTeamsPlayed;
+
+    if (isLastRound) {
       setGameState(prev => ({ ...prev, isPlaying: false }));
       return;
     }
 
-    setGameState(prev => ({
-      ...prev,
-      currentRound: prev.currentRound + 1,
-      timeLeft: prev.settings.timePerRound,
-      roundScore: 0,
-      questionsAnswered: 0,
-      teams: prev.teams.map(team => ({ ...team, isActing: !team.isActing })),
-      isLoading: true
-    }));
+    // Switch teams or start new round
+    if (allTeamsPlayed) {
+      setGameState(prev => ({
+        ...prev,
+        currentRound: prev.currentRound + 1,
+        currentTeamIndex: 0,
+        timeLeft: prev.settings.timePerRound,
+        roundScore: 0,
+        questionsAnswered: 0,
+        teams: prev.teams.map(team => ({ ...team, isActing: !team.isActing })),
+        isLoading: true
+      }));
+    } else {
+      setGameState(prev => ({
+        ...prev,
+        currentTeamIndex: prev.currentTeamIndex + 1,
+        timeLeft: prev.settings.timePerRound,
+        roundScore: 0,
+        questionsAnswered: 0,
+        teams: prev.teams.map((team, index) => ({
+          ...team,
+          isActing: index === prev.currentTeamIndex + 1
+        })),
+        isLoading: true
+      }));
+    }
 
     await getNextStory();
-  }, [gameState.currentRound, gameState.settings.totalRounds, getNextStory]);
+  }, [gameState, getNextStory]);
 
   const decrementTime = useCallback(() => {
-    setGameState(prev => ({
-      ...prev,
-      timeLeft: Math.max(0, prev.timeLeft - 1)
-    }));
+    setGameState(prev => {
+      const newTime = Math.max(0, prev.timeLeft - 1);
+      
+      // Play timer sound in last 10 seconds
+      if (newTime <= 10 && newTime > 0) {
+        timerSound.playTick();
+      }
+      
+      return {
+        ...prev,
+        timeLeft: newTime
+      };
+    });
   }, []);
 
   return {

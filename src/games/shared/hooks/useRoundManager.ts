@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { timerSound } from '../../../services/audio/timerSound';
 
 interface GameSettings {
   totalRounds: number;
@@ -46,6 +47,12 @@ export const useRoundManager = () => {
   const decrementTime = useCallback(() => {
     setTimeLeft(prev => {
       const newTime = Math.max(0, prev - 1);
+      
+      // Play timer sound in last 10 seconds
+      if (newTime <= 10 && newTime > 0) {
+        timerSound.playTick();
+      }
+      
       return newTime;
     });
   }, []);

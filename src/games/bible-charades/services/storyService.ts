@@ -1,4 +1,4 @@
-import { BIBLE_STORIES } from '../constants/stories';
+import { BIBLE_STORIES, getRandomStories } from '../constants/stories';
 import { chatgptStoryService } from './chatgptStoryService';
 import { promptService } from './promptService';
 import type { BibleStory, StoryGenerationMode } from '../types';
@@ -12,41 +12,27 @@ class StoryService {
       
       switch (mode) {
         case 'bedrock':
-          // Single API call for multiple stories
           const prompt = await promptService.generateStoryPrompt(theme, difficulty, batchSize);
           stories = Array.isArray(prompt) ? prompt.map(p => this.convertPromptToStory(p)) : [];
           break;
 
         case 'chatgpt':
-          // Single API call for multiple stories
           stories = await chatgptStoryService.generateStories(theme, difficulty, batchSize);
           break;
 
         case 'static':
         default:
-          const availableStories = BIBLE_STORIES.filter(
-            story => !this.usedStoryIds.has(story.id)
-          );
-          
-          if (availableStories.length === 0) {
-            this.usedStoryIds.clear();
-            stories = BIBLE_STORIES.slice(0, batchSize);
-          } else {
-            stories = availableStories.slice(0, batchSize);
-          }
-
-          stories.forEach(story => this.usedStoryIds.add(story.id));
+          stories = getRandomStories(batchSize, difficulty as 'easy' | 'medium' | 'hard');
+          break;
       }
 
-      // Add fallback descriptions if needed
       return stories.map(story => ({
         ...story,
         fallbackDescription: story.fallbackDescription || this.generateFallbackDescription(story)
       }));
     } catch (error) {
       console.error('Error fetching stories batch:', error);
-      // Fallback to static stories if API calls fail
-      return BIBLE_STORIES.slice(0, batchSize);
+      return getRandomStories(batchSize, difficulty as 'easy' | 'medium' | 'hard');
     }
   }
 
@@ -65,9 +51,13 @@ class StoryService {
       description: prompt.description,
       scripture: prompt.scripture,
       difficulty: prompt.difficulty || 'medium',
-      images: [],
+      image: {
+        url: 'https://images.unsplash.com/photo-1533000971552-6a962ff0b9f9?q=80&w=1920&auto=format&fit=crop',
+        alt: prompt.title
+      },
       fallbackDescription: prompt.description,
       options: prompt.options,
+      correctAnswer: prompt.title,
       devotional: prompt.devotional
     };
   }
