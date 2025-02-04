@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Book } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { TimeSelector } from '../../shared/components/TimeSelector';
 import { RoundSelector } from '../../shared/components/RoundSelector';
 import { PackTypeSelector } from './PackTypeSelector';
 import { DifficultySelector } from './DifficultySelector';
 import { BibleVersionSelector } from './BibleVersionSelector';
+import { ScriptureReadingModal } from './ScriptureReadingModal';
 import { DEFAULT_SETTINGS } from '../../shared/constants/gameSettings';
 import type { GameSettings, PackType, DifficultyLevel, BibleVersion } from '../types';
 
@@ -20,6 +21,7 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('medium');
   const [maxAttempts, setMaxAttempts] = useState(3);
   const [bibleVersion, setBibleVersion] = useState<BibleVersion>('NKJV');
+  const [isReadingModalOpen, setIsReadingModalOpen] = useState(false);
 
   const handleStartGame = () => {
     const settings: GameSettings = {
@@ -84,9 +86,25 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onGameStart }) => {
         </div>
       </div>
 
-      <Button onClick={handleStartGame} className="w-full">
-        Start Game
-      </Button>
+      <div className="flex flex-col space-y-3">
+        <Button onClick={handleStartGame} className="w-full">
+          Start Game
+        </Button>
+        <Button 
+          variant="outline" 
+          onClick={() => setIsReadingModalOpen(true)}
+          className="w-full flex items-center justify-center"
+        >
+          <Book className="w-4 h-4 mr-2" />
+          Read Scriptures
+        </Button>
+      </div>
+
+      <ScriptureReadingModal
+        isOpen={isReadingModalOpen}
+        onClose={() => setIsReadingModalOpen(false)}
+        selectedPack={packType}
+      />
     </div>
   );
 };
