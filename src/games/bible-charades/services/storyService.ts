@@ -1,4 +1,4 @@
-import { BIBLE_STORIES } from '../constants/stories';
+import { BIBLE_STORIES, getRandomStories } from '../constants/stories';
 import { chatgptStoryService } from './chatgptStoryService';
 import { promptService } from './promptService';
 import type { BibleStory, StoryGenerationMode } from '../types';
@@ -22,19 +22,8 @@ class StoryService {
 
         case 'static':
         default:
-          // Filter stories by difficulty first
-          const difficultyStories = BIBLE_STORIES.filter(story => 
-            story.difficulty === difficulty && !this.usedStoryIds.has(story.id)
-          );
-          
-          if (difficultyStories.length === 0) {
-            this.usedStoryIds.clear();
-            stories = BIBLE_STORIES.filter(story => story.difficulty === difficulty).slice(0, batchSize);
-          } else {
-            stories = difficultyStories.slice(0, batchSize);
-          }
-
-          stories.forEach(story => this.usedStoryIds.add(story.id));
+          stories = getRandomStories(batchSize, difficulty as 'easy' | 'medium' | 'hard');
+          break;
       }
 
       return stories.map(story => ({
@@ -43,8 +32,7 @@ class StoryService {
       }));
     } catch (error) {
       console.error('Error fetching stories batch:', error);
-      // Fallback to static stories with correct difficulty
-      return BIBLE_STORIES.filter(story => story.difficulty === difficulty).slice(0, batchSize);
+      return getRandomStories(batchSize, difficulty as 'easy' | 'medium' | 'hard');
     }
   }
 
@@ -63,9 +51,13 @@ class StoryService {
       description: prompt.description,
       scripture: prompt.scripture,
       difficulty: prompt.difficulty || 'medium',
-      images: [],
+      image: {
+        url: 'https://images.unsplash.com/photo-1533000971552-6a962ff0b9f9?q=80&w=1920&auto=format&fit=crop',
+        alt: prompt.title
+      },
       fallbackDescription: prompt.description,
       options: prompt.options,
+      correctAnswer: prompt.title,
       devotional: prompt.devotional
     };
   }

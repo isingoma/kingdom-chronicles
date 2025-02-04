@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { storyService } from '../services/storyService';
-import type { GameState, Team, GameSettings, BibleStory } from '../types';
+import type { GameState, Team, GameSettings, BibleStory, GameDifficulty, StoryGenerationMode } from '../types';
 import { analyticsService } from '../../../services/analytics/analyticsService';
 import { timerSound } from '../../../services/audio/timerSound';
 
@@ -38,16 +38,20 @@ export const useGameState = () => {
   const usedStoryIds = useRef<Set<string>>(new Set());
   const isFetchingStories = useRef(false);
 
-  const fetchStoriesBatch = useCallback(async (mode: string, difficulty: string) => {
+  const fetchStoriesBatch = useCallback(async (mode: StoryGenerationMode, difficulty: GameDifficulty) => {
     if (isFetchingStories.current) return;
     
     isFetchingStories.current = true;
     try {
+      console.log("is the difficulty level being passed",difficulty)
       const newStories = await storyService.fetchStoriesBatch(mode, 'general', difficulty);
       // Filter stories by difficulty and exclude used ones
+
+      console.log("The new stories",newStories)
       const filteredStories = newStories.filter(story => 
         story.difficulty === difficulty && !usedStoryIds.current.has(story.id)
       );
+      console.log("filteredStories",filteredStories)
       
       const processedStories = filteredStories.map(story => {
         const correctAnswer = story.options[0];
@@ -58,8 +62,11 @@ export const useGameState = () => {
           options: shuffledOptions
         };
       });
+
+      console.log("processedStories",processedStories)
       
       storiesQueue.current = [...storiesQueue.current, ...processedStories];
+      console.log("storiesQueue.currents",storiesQueue.current)
     } catch (error) {
       console.error('Error fetching stories batch:', error);
     } finally {
@@ -69,11 +76,15 @@ export const useGameState = () => {
 
   const getNextStory = useCallback(async () => {
     if (storiesQueue.current.length < 3) {
-      setGameState(prev => ({ ...prev, isLoading: true }));
-      await fetchStoriesBatch(
-        gameState.settings.storyMode,
-        gameState.settings.difficulty
-      );
+      setGameState(prev => {
+        console.log("getting next story", prev.settings.storyMode, prev.settings.difficulty);
+        // Use the settings from prev state to ensure we have latest values
+        fetchStoriesBatch(
+          prev.settings.storyMode as StoryGenerationMode,
+          prev.settings.difficulty as GameDifficulty
+        );
+        return { ...prev, isLoading: true };
+      });
     }
 
     const nextStory = storiesQueue.current.shift();
@@ -92,7 +103,7 @@ export const useGameState = () => {
     } else {
       setGameState(prev => ({ ...prev, isLoading: false, currentStory: null }));
     }
-  }, [gameState.settings.storyMode, gameState.settings.difficulty, fetchStoriesBatch]);
+  }, [fetchStoriesBatch]); // Remove gameState.settings from dependency array
 
   const makeGuess = useCallback(async (guess: string) => {
     if (!gameState.currentStory) return;
@@ -117,6 +128,15 @@ export const useGameState = () => {
   const startGame = useCallback(async (teams: Team[], settings: GameSettings) => {
     analyticsService.trackGameStart('bible-charades', settings);
     usedStoryIds.current.clear();
+    storiesQueue.current = []; // Clear existing stories
+    
+    // First fetch stories
+    await fetchStoriesBatch(
+      settings.storyMode as StoryGenerationMode, 
+      settings.difficulty as GameDifficulty
+    );
+
+    // Then set game state
     setGameState(prev => ({
       ...prev,
       teams,
@@ -130,10 +150,7 @@ export const useGameState = () => {
       currentTeamIndex: 0
     }));
 
-    if (settings.storyMode !== 'static') {
-      await fetchStoriesBatch(settings.storyMode, settings.difficulty);
-    }
-
+    // Finally get the first story
     await getNextStory();
   }, [fetchStoriesBatch, getNextStory]);
 

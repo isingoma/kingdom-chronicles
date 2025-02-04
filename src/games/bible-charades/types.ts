@@ -12,10 +12,10 @@ export interface BibleStory {
   description: string;
   scripture: string;
   difficulty: string;
-  images: StoryImage[];
+  image: StoryImage;
   fallbackDescription: string;
   options: string[];
-  correctAnswer: string;  // Added to store the correct answer
+  correctAnswer: string;
   devotional: string;
 }
 
@@ -40,6 +40,7 @@ export interface GameState {
   roundScore: number;
   questionsAnswered: number;
   isLoading: boolean;
+  currentTeamIndex: number;
 }
 
 export interface Team {
