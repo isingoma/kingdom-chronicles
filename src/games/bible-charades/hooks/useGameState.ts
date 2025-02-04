@@ -156,14 +156,15 @@ export const useGameState = () => {
 
   const nextRound = useCallback(async () => {
     const allTeamsPlayed = gameState.currentTeamIndex >= gameState.teams.length - 1;
-    const isLastRound = gameState.currentRound >= gameState.settings.totalRounds && allTeamsPlayed;
+    const isLastRound = gameState.currentRound >= gameState.settings.totalRounds;
 
+    // End game if we've completed all rounds
     if (isLastRound) {
       setGameState(prev => ({ ...prev, isPlaying: false }));
       return;
     }
 
-    // Switch teams or start new round
+    // Increment round counter only when all teams have played
     if (allTeamsPlayed) {
       setGameState(prev => ({
         ...prev,
@@ -176,6 +177,7 @@ export const useGameState = () => {
         isLoading: true
       }));
     } else {
+      // Just switch teams without incrementing round
       setGameState(prev => ({
         ...prev,
         currentTeamIndex: prev.currentTeamIndex + 1,
@@ -191,7 +193,7 @@ export const useGameState = () => {
     }
 
     await getNextStory();
-  }, [gameState, getNextStory]);
+  }, [gameState.currentRound, gameState.currentTeamIndex, gameState.settings.totalRounds, gameState.settings.timePerRound, gameState.teams.length, getNextStory]);
 
   const decrementTime = useCallback(() => {
     setGameState(prev => {
