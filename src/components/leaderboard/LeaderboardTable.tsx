@@ -45,11 +45,6 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
             <th className="px-6 py-3 text-left text-xs font-medium text-theme-secondary uppercase tracking-wider">
               Total Score
             </th>
-            {selectedGame === 'all' && (
-              <th className="px-6 py-3 text-left text-xs font-medium text-theme-secondary uppercase tracking-wider">
-                Game Type
-              </th>
-            )}
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
@@ -81,13 +76,6 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
                   {entry.totalScore.toLocaleString()}
                 </div>
               </td>
-              {selectedGame === 'all' && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-theme-secondary">
-                    {getGameName(entry.gameType)}
-                  </div>
-                </td>
-              )}
             </tr>
           ))}
         </tbody>
