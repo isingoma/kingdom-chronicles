@@ -9,7 +9,7 @@ import type { GameScore, LeaderboardEntry, GameScoreUpdate } from './types';
 
 class ScoreService {
   private client: DynamoDBDocumentClient;
-  private readonly TABLE_NAME = 'KingdomChroniclesScores-dev-dev';
+  private readonly TABLE_NAME = 'KingdomChroniclesScores-dev';
 
   constructor() {
     const ddbClient = new DynamoDBClient({
@@ -40,37 +40,60 @@ class ScoreService {
       }
     }));
 
-    // Update user's total score
+    // Update or create game-specific total score
+    await this.client.send(new UpdateCommand({
+      TableName: this.TABLE_NAME,
+      Key: {
+        PK: `USER#${userId}`,
+        SK: `TOTAL#${update.gameType}`
+      },
+      UpdateExpression: 'ADD totalScore :score SET username = :username, gameType = :gameType',
+      ExpressionAttributeValues: {
+        ':score': update.score,
+        ':username': username,
+        ':gameType': update.gameType
+      }
+    }));
+
+    // Update overall total score
     await this.client.send(new UpdateCommand({
       TableName: this.TABLE_NAME,
       Key: {
         PK: `USER#${userId}`,
         SK: 'TOTAL'
       },
-      UpdateExpression: 'ADD totalScore :score',
+      UpdateExpression: 'ADD totalScore :score SET username = :username, gameType = :gameType',
       ExpressionAttributeValues: {
-        ':score': update.score
+        ':score': update.score,
+        ':username': username,
+        ':gameType': 'ALL'
       }
     }));
   }
 
-  async getLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
-    const { Items = [] } = await this.client.send(new QueryCommand({
-      TableName: this.TABLE_NAME,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'SK = :sk',
-      ExpressionAttributeValues: {
-        ':sk': 'TOTAL'
-      },
-      ScanIndexForward: false,
-      Limit: limit
-    }));
+  async getLeaderboard(limit: number = 10, gameType?: string): Promise<LeaderboardEntry[]> {
+    try {
+      const { Items = [] } = await this.client.send(new QueryCommand({
+        TableName: this.TABLE_NAME,
+        IndexName: 'GSI1',
+        KeyConditionExpression: 'gameType = :gameType',
+        ExpressionAttributeValues: {
+          ':gameType': gameType || 'ALL'
+        },
+        ScanIndexForward: false,
+        Limit: limit
+      }));
 
-    return Items.map((item, index) => ({
-      username: item.username,
-      totalScore: item.totalScore,
-      rank: index + 1
-    }));
+      return Items.map((item, index) => ({
+        username: item.username,
+        totalScore: item.totalScore || 0,
+        rank: index + 1,
+        gameType: item.gameType
+      }));
+    } catch (error) {
+      console.error('Error in getLeaderboard:', error);
+      throw error;
+    }
   }
 
   async getUserScores(userId: string): Promise<GameScore[]> {

@@ -4,7 +4,7 @@ import { Building2, Ship, Theater, Book, BookOpen, Scroll } from 'lucide-react';
 import { ThemeSelector } from '../components/ui/ThemeSelector';
 import { useTheme } from '../hooks/useTheme';
 
-const games = [
+export const games = [
   {
     id: 'testament-quiz',
     title: 'Guess the Testament',
@@ -54,6 +54,14 @@ const games = [
     players: '1-2'
   },
 ];
+
+export const getGameName = (gameType: string | undefined): string => {
+
+  console.log("checking my game type",gameType)
+  if (!gameType) return 'Unknown Game';
+  const game = games.find(g => g.id === gameType);
+  return game ? game.title : 'Unknown Game';
+};
 
 export const Games: React.FC = () => {
   const [visibleGames, setVisibleGames] = useState<number[]>([]);

@@ -1,20 +1,32 @@
 import React from 'react';
-import { Trophy } from 'lucide-react';
+import { Trophy, Search } from 'lucide-react';
 import type { LeaderboardEntry } from '../../services/scores/types';
+import { getGameName } from '../../pages/Games';
 
 interface LeaderboardTableProps {
   entries: LeaderboardEntry[];
   isLoading?: boolean;
+  selectedGame: string;
 }
 
 export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ 
   entries,
-  isLoading 
+  isLoading,
+  selectedGame
 }) => {
   if (isLoading) {
     return (
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto" />
+      </div>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div className="text-center py-8 text-theme-secondary">
+        <Search className="w-12 h-12 mx-auto mb-2 opacity-50" />
+        <p>No results found</p>
       </div>
     );
   }

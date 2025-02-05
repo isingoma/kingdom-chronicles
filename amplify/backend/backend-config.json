@@ -1,1 +1,8 @@
-{}
+{
+  "storage": {
+    "kingdomChroniclesDB": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
+    }
+  }
+}
