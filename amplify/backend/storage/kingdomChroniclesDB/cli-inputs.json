@@ -1,5 +1,5 @@
 {
-  "resourceName": "dynamoKC",
+  "resourceName": "kingdomChroniclesDB",
   "tableName": "KingdomChroniclesScores",
   "partitionKey": {
     "fieldName": "PK",
@@ -13,8 +13,12 @@
     {
       "name": "GSI1",
       "partitionKey": {
-        "fieldName": "SK",
+        "fieldName": "gameType",
         "fieldType": "string"
+      },
+      "sortKey": {
+        "fieldName": "totalScore",
+        "fieldType": "number"
       }
     }
   ],

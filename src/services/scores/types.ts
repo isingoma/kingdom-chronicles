@@ -10,6 +10,7 @@ export interface LeaderboardEntry {
   username: string;
   totalScore: number;
   rank: number;
+  gameType?: string;
 }
 
 export interface GameScoreUpdate {

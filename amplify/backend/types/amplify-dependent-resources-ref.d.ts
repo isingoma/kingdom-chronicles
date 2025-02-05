@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
   "storage": {
-    "dynamoKC": {
+    "kingdomChroniclesDB": {
       "Arn": "string",
       "Name": "string",
       "PartitionKeyName": "string",

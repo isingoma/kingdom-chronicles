@@ -1,6 +1,6 @@
 {
   "storage": {
-    "dynamoKC": {
+    "kingdomChroniclesDB": {
       "providerPlugin": "awscloudformation",
       "service": "DynamoDB"
     }
