@@ -74,20 +74,25 @@ export const VerseInput: React.FC<VerseInputProps> = ({
 
   const handleSkip = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop(); // Stop the mic when skipping
+      recognitionRef.current.abort(); // Cancel any ongoing recognition
+      recognitionRef.current.stop();  // Ensure it stops completely
     }
+    setIsRecording(false); // Update state to reflect mic is off
     setInput(''); // Clear the text area
     onSubmit(null); // Notify that the user skipped
   };
+  
 
   const handleClear = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop(); // Stop the mic when clearing input
+      recognitionRef.current.abort(); // Cancel any ongoing recognition
+      recognitionRef.current.stop();  // Ensure it stops completely
     }
-    setInput('');
+    setIsRecording(false); // Update mic state to reflect it's off
+    setInput(''); // Clear the text area
   };
   
-
+  
   const handleVoiceRecording = () => {
     if (!recognitionRef.current) return;
   
