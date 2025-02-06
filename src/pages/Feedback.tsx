@@ -9,8 +9,8 @@ export const Feedback: React.FC = () => {
     {
       icon: <Mail className="w-8 h-8 text-indigo-600" />,
       title: 'Email',
-      value: 'kingdomchroniclesug@gmail.com',
-      link: 'kingdomchroniclesug@gmail.com',
+      value: 'support@kingdomchroniclesug.com',
+      link: 'mailto:masikotimo@gmail.com',
       description: 'Send us your detailed feedback via email'
     },
     {

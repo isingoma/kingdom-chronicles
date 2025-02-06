@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SkipForward, Mic, MicOff } from 'lucide-react';
+import { SkipForward, Mic, MicOff, XCircle } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 
 interface VerseInputProps {
@@ -16,79 +16,83 @@ export const VerseInput: React.FC<VerseInputProps> = ({
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-
-
   const lastTranscript = useRef<string>(''); // Track the last transcribed word
 
   useEffect(() => {
-    // Check if the browser supports SpeechRecognition
     const SpeechRecognition = 
       (window as any).SpeechRecognition || 
       (window as any).webkitSpeechRecognition;
 
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current!.continuous = true; // Keep listening
-      recognitionRef.current!.interimResults = true; // Show results as you speak
-      recognitionRef.current!.lang = 'en-GB'; // Language setting
+      recognitionRef.current!.continuous = true;
+      recognitionRef.current!.interimResults = true;
+      recognitionRef.current!.lang = 'en-GB';
 
       recognitionRef.current!.onresult = (event: SpeechRecognitionEvent) => {
         let newTranscript = '';
 
-        // Loop through the results and get the most recent words
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            // If the result is final, use it
             newTranscript += result;
           }
         }
 
-        // Check if a delete or backspace command is spoken
         if (newTranscript.toLowerCase().includes('delete') || newTranscript.toLowerCase().includes('backspace')) {
-          setInput((prevInput) => prevInput.trim().split(' ').slice(0, -1).join(' ')); // Remove the last word
+          setInput((prevInput) => prevInput.trim().split(' ').slice(0, -1).join(' '));
         } else if (newTranscript !== lastTranscript.current) {
-          setInput((prevInput) => prevInput + ' ' + newTranscript); // Append the unique transcribed text
-          lastTranscript.current = newTranscript; // Update the last word tracked
+          setInput((prevInput) => (prevInput ? prevInput + ' ' : '') + newTranscript);
+          lastTranscript.current = newTranscript;
         }
       };
 
-      recognitionRef.current!.onerror = (event: { error: any; }) => {
+      recognitionRef.current!.onerror = (event: { error: any }) => {
         console.error('Speech recognition error:', event.error);
         setIsRecording(false);
       };
 
       recognitionRef.current!.onend = () => {
-        if (isRecording && recognitionRef.current) {
-          recognitionRef.current.start(); // Auto-restart if still recording
+        if (isRecording) {
+          try {
+            recognitionRef.current?.start();
+          } catch (error) {
+            console.error("Error restarting speech recognition:", error);
+          }
         }
       };
     } else {
       console.warn('SpeechRecognition is not supported in this browser.');
     }
-  }, [isRecording]);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || attemptsLeft === 0) return;
     onSubmit(input);
-    setInput('');
   };
 
   const handleSkip = () => {
     onSubmit(null);
+  };
+
+  const handleClear = () => {
     setInput('');
   };
 
   const handleVoiceRecording = () => {
-    if (recognitionRef.current) {
-      if (isRecording) {
-        recognitionRef.current.stop(); // Stop recording
-      } else {
-        recognitionRef.current.abort(); // Reset recognition if it was previously stopped
-        recognitionRef.current.start(); // Start fresh
+    if (!recognitionRef.current) return;
+  
+    if (isRecording) {
+      recognitionRef.current.stop();
+    } else {
+      try {
+        recognitionRef.current.start();
+      } catch (error) {
+        console.error("Error starting speech recognition:", error);
       }
     }
+  
     setIsRecording((prev) => !prev);
   };
 
@@ -121,16 +125,27 @@ export const VerseInput: React.FC<VerseInputProps> = ({
           Submit Answer
         </Button>
 
-        {/* Voice Recording Icon */}
+        {/* Voice Recording Button */}
         <div
-          onClick={handleVoiceRecording}
-          className={`p-3 rounded-md cursor-pointer transition ${
-            isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-          title={isRecording ? 'Stop Recording' : 'Start Recording'}
+        onClick={handleVoiceRecording}
+        className={`p-3 rounded-md cursor-pointer transition ${
+          isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-700 text-white hover:bg-gray-600'
+        }`}
+        title={isRecording ? 'Stop Recording' : 'Start Recording'}
+      >
+        {isRecording ? <Mic className="w-5 h-5 text-white" /> : <MicOff className="w-5 h-5 text-white" />}
+    </div>
+        {/* Clear Button */}
+        <Button 
+          type="button"
+          variant="outline"
+          onClick={handleClear}
+          disabled={isDisabled || !input.trim()}
+          className="flex items-center"
         >
-          {isRecording ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />} {/* Use MicOff when not recording */}
-        </div>
+          <XCircle className="w-4 h-4 mr-2 text-red-500" />
+          Clear
+        </Button>
 
         <Button 
           type="button"
