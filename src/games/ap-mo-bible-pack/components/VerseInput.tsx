@@ -84,10 +84,6 @@ export const VerseInput: React.FC<VerseInputProps> = ({
   
 
   const handleClear = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.abort(); // Cancel any ongoing recognition
-      recognitionRef.current.stop();  // Ensure it stops completely
-    }
     setIsRecording(false); // Update mic state to reflect it's off
     setInput(''); // Clear the text area
   };
@@ -133,11 +129,10 @@ export const VerseInput: React.FC<VerseInputProps> = ({
         <Button 
           type="submit" 
           disabled={isDisabled || !input.trim()}
-          className="w-full flex items-center justify-center"
+          className="w-3/4 flex items-center justify-center space-x-2"
         >
           Submit
         </Button>
-        
 
         {/* Voice Recording Button */}
         <div
@@ -147,7 +142,7 @@ export const VerseInput: React.FC<VerseInputProps> = ({
         }`}
         title={isRecording ? 'Stop Recording' : 'Start Recording'}
       >
-        {isRecording ? <Mic className="w-5 h-5 text-white" /> : <MicOff className="w-5 h-5 text-white" />}
+        {isRecording ? <Mic className="w-4 h-4 text-white" /> : <MicOff className="w-4 h-4 text-white" />}
     </div>
 {/* Clear Button */}
 <Button 
@@ -155,7 +150,7 @@ export const VerseInput: React.FC<VerseInputProps> = ({
   variant="outline"
   onClick={handleClear}
   disabled={isDisabled || !input.trim()}
-  className="w-full md:w-auto flex items-center justify-center px-5 py-3 text-base md:text-lg"
+  className="flex items-center justify-center"
 >
   <XCircle className="w-5 h-5 mr-2 text-red-500" />
   Clear
@@ -167,7 +162,7 @@ export const VerseInput: React.FC<VerseInputProps> = ({
   variant="outline"
   onClick={handleSkip}
   disabled={disabled}
-  className="w-full md:w-auto flex items-center justify-center px-5 py-3 text-base md:text-lg"
+  className="flex items-center justify-center"
 >
   <SkipForward className="w-5 h-5 mr-2" />
   Skip
