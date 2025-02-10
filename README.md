@@ -157,7 +157,13 @@ npm run dev
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+5. Open a Pull Request to the `develop` branch
+6. Include a demo video in your Pull Request to showcase the feature or fix
+
+### Demo Video Guidelines
+- Keep it short and focused on the changes.
+- Highlight key features or fixes.
+- Use screen recording tools like awesome screenshot or screencastify.
 
 ## 📝 License
 
