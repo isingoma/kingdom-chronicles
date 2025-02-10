@@ -133,9 +133,9 @@ export const VerseInput: React.FC<VerseInputProps> = ({
         <Button 
           type="submit" 
           disabled={isDisabled || !input.trim()}
-          className="flex-1"
+          className="w-full flex items-center justify-center"
         >
-          Submit Answer
+          Submit
         </Button>
 
         {/* Voice Recording Button */}
@@ -148,28 +148,30 @@ export const VerseInput: React.FC<VerseInputProps> = ({
       >
         {isRecording ? <Mic className="w-5 h-5 text-white" /> : <MicOff className="w-5 h-5 text-white" />}
     </div>
-        {/* Clear Button */}
-        <Button 
-          type="button"
-          variant="outline"
-          onClick={handleClear}
-          disabled={isDisabled || !input.trim()}
-          className="flex items-center"
-        >
-          <XCircle className="w-4 h-4 mr-2 text-red-500" />
-          Clear
-        </Button>
+{/* Clear Button */}
+<Button 
+  type="button"
+  variant="outline"
+  onClick={handleClear}
+  disabled={isDisabled || !input.trim()}
+  className="w-full md:w-auto flex items-center justify-center px-5 py-3 text-base md:text-lg"
+>
+  <XCircle className="w-5 h-5 mr-2 text-red-500" />
+  Clear
+</Button>
 
-        <Button 
-          type="button"
-          variant="outline"
-          onClick={handleSkip}
-          disabled={disabled}
-          className="flex items-center"
-        >
-          <SkipForward className="w-4 h-4 mr-2" />
-          Skip
-        </Button>
+{/* Skip Button */}
+<Button 
+  type="button"
+  variant="outline"
+  onClick={handleSkip}
+  disabled={disabled}
+  className="w-full md:w-auto flex items-center justify-center px-5 py-3 text-base md:text-lg"
+>
+  <SkipForward className="w-5 h-5 mr-2" />
+  Skip
+</Button>
+
       </div>
     </form>
   );
