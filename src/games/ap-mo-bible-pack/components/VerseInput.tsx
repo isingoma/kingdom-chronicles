@@ -137,6 +137,7 @@ export const VerseInput: React.FC<VerseInputProps> = ({
         >
           Submit
         </Button>
+        
 
         {/* Voice Recording Button */}
         <div
